@@ -1,0 +1,9 @@
+[info]
+title=Config menu
+desc=Config menu items
+type=cudatext-plugin
+subdir=cuda_config_menu
+
+[item1]
+section=events
+events=on_start
