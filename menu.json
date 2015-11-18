@@ -1,0 +1,210 @@
+{"top-file":
+    {"how":"clear"
+    ,"sub":
+    [   {"cap":"New file"           ,"cmd":"cmd_FileNew"}
+    ,   {"cap":"Open..."            ,"cmd":"cmd_FileOpen"}
+    ,   {"cap":"Open recent"        ,"cmd":"recents"}
+    ,   {"cap":"Reopen"             ,"cmd":"cmd_FileReopen"}
+    ,   {"cap":"-"}
+    ,   {"cap":"Save"               ,"cmd":"cmd_FileSave"}
+    ,   {"cap":"Save as ..."        ,"cmd":"cmd_FileSaveAs"}
+    ,   {"cap":"Save all"           ,"cmd":"cmd_FileSaveAll"}
+    ,   {"cap":"-"}
+    ,   {"cap":"Close"              ,"cmd":"cmd_FileClose"}
+    ,   {"cap":"Close all"          ,"cmd":"cmd_FileCloseAll"}
+    ,   {"cap":"Close other all"    ,"cmd":"cmd_FileCloseOtherAll"}
+    ,   {"cap":"-"}
+    ,   {"cap":"Encoding"           ,"sub":
+        [   {"cap":"Reload as"      ,"sub":
+            [   {"cap":"ANSI"           ,"cmd":"cmd_Encoding_ansi_Reload"}
+            ,   {"cap":"UTF-8"          ,"cmd":"cmd_Encoding_utf8_Reload"}
+            ,   {"cap":"UTF-8 no bom"   ,"cmd":"cmd_Encoding_utf8nobom_Reload"}
+            ,   {"cap":"UTF-16 le"      ,"cmd":"cmd_Encoding_utf16le_Reload"}
+            ,   {"cap":"UTF-16 be"      ,"cmd":"cmd_Encoding_utf16be_Reload"}
+            ,   {"cap":"Europian"       ,"sub":
+                [   {"cap":"CP1250"     ,"cmd":"cmd_Encoding_cp1250_Reload"}
+                ,   {"cap":"CP1251"     ,"cmd":"cmd_Encoding_cp1251_Reload"}
+                ,   {"cap":"CP1252"     ,"cmd":"cmd_Encoding_cp1252_Reload"}
+                ]}
+            ]}
+        ,    {"cap":"Convert to"    ,"sub":
+            [   {"cap":"ANSI"           ,"cmd":"cmd_Encoding_ansi_NoReload"}
+            ,   {"cap":"UTF-8"          ,"cmd":"cmd_Encoding_utf8_NoReload"}
+            ,   {"cap":"UTF-8 no bom"   ,"cmd":"cmd_Encoding_utf8nobom_NoReload"}
+            ,   {"cap":"UTF-16 le"      ,"cmd":"cmd_Encoding_utf16le_NoReload"}
+            ,   {"cap":"UTF-16 be"      ,"cmd":"cmd_Encoding_utf16be_NoReload"}
+            ,   {"cap":"Europian"       ,"sub":
+                [   {"cap":"CP1250"     ,"cmd":"cmd_Encoding_cp1250_NoReload"}
+                ,   {"cap":"CP1251"     ,"cmd":"cmd_Encoding_cp1251_NoReload"}
+                ,   {"cap":"CP1252"     ,"cmd":"cmd_Encoding_cp1252_NoReload"}
+                ]}
+            ]}
+        ]}
+    ,   {"cap":"Line ends"          ,"sub":
+        [   {"cap":"Win"            ,"cmd":"cmd_LineEndWin"}
+        ,   {"cap":"Unix"           ,"cmd":"cmd_LineEndUnix"}
+        ,   {"cap":"Mac"            ,"cmd":"cmd_LineEndMac"}
+        ]}
+    ,   {"cap":"-"}
+    ,   {"cap":"Export to HTML"     ,"cmd":"cmd_FileExportHtml"}
+    ,   {"cap":"-"}
+    ,   {"cap":"Exit"               ,"cmd":"cmd_FileExit"}
+    ]}
+,"top-edit":
+    {"how":"clear"
+    ,"sub":
+    [   {"cap":"Undo"                       ,"cmd":"cCommand_Undo"}
+    ,   {"cap":"Redo"                       ,"cmd":"cCommand_Redo"}
+    ,   {"cap":"Repeat command"             ,"cmd":"cCommand_RepeatTextCommand"}
+    ,   {"cap":"-"}
+    ,   {"cap":"Cut"                        ,"cmd":"cCommand_ClipboardCut"}
+    ,   {"cap":"Copy"                       ,"cmd":"cCommand_ClipboardCopy"}
+    ,   {"cap":"Paste"                      ,"cmd":"cCommand_ClipboardPaste"}
+    ,   {"cap":"Delete"                     ,"cmd":"cCommand_KeyDelete"}
+    ,   {"cap":"-"}
+    ,   {"cap":"Copy to clipboard"          ,"sub":
+        [   {"cap":"Copy current line"      ,"cmd":"cCommand_ClipboardCopy"}
+        ,   {"cap":"Copy/append selection"  ,"cmd":"cCommand_ClipboardCopyAdd"}
+        ,   {"cap":"-"}
+        ,   {"cap":"Copy full filepath"     ,"cmd":"cmd_CopyFilenameFull"}
+        ,   {"cap":"Copy filepath only"     ,"cmd":"cmd_CopyFilenameDir"}
+        ,   {"cap":"Copy filename only"     ,"cmd":"cmd_CopyFilenameName"}
+        ]}
+    ,   {"cap":"Line operations"            ,"sub":
+        [   {"cap":"Delete line(s)"         ,"cmd":"cCommand_TextDeleteLine"}
+        ,   {"cap":"Duplicate line(s)"      ,"cmd":"cmd_DuplicateLineEx"}
+        ,   {"cap":"-"}
+        ,   {"cap":"Move line(s) up"        ,"cmd":"cCommand_MoveSelectionUp"}
+        ,   {"cap":"Move line(s) down"      ,"cmd":"cCommand_MoveSelectionDown"}
+        ]}
+    ,   {"cap":"Blank operations"           ,"sub":
+        [   {"cap":"Indent"                 ,"cmd":"cCommand_TextIndent"}
+        ,   {"cap":"Unindent"               ,"cmd":"cCommand_TextUnindent"}
+        ,   {"cap":"-"}
+        ,   {"cap":"Trim spaces: left"      ,"cmd":"cCommand_TextTrimSpacesLeft"}
+        ,   {"cap":"Trim spaces: right"     ,"cmd":"cCommand_TextTrimSpacesRight"}
+        ,   {"cap":"Trim spaces: all"       ,"cmd":"cCommand_TextTrimSpacesAll"}
+        ]}
+    ,   {"cap":"Convert case"               ,"sub":
+        [   {"cap":"Upper case"             ,"cmd":"cCommand_TextCaseUpper"}
+        ,   {"cap":"Lower case"             ,"cmd":"cCommand_TextCaseLower"}
+        ,   {"cap":"Title case"             ,"cmd":"cCommand_TextCaseTitle"}
+        ,   {"cap":"Invert case"            ,"cmd":"cCommand_TextCaseInvert"}
+        ,   {"cap":"Sentence case"          ,"cmd":"cCommand_TextCaseSentence"}
+        ]}
+    ,   {"cap":"Sort lines"                 ,"sub":
+        [   {"cap":"Sort lines asc"         ,"cmd":"cmd_SortAsc"}
+        ,   {"cap":"Sort lines desc"        ,"cmd":"cmd_SortDesc"}
+        ]}
+    ,   {"cap":"Comments"                   ,"sub":
+        [   {"cap":"Add line comment"               ,"cmd":"cmd_CommentLineAdd_AtStart"}
+        ,   {"cap":"Add line comment at nonspace"   ,"cmd":"cmd_CommentLineAdd_AtNonspace"}
+        ,   {"cap":"Remove line comment"            ,"cmd":"cmd_CommentLineRemove"}
+        ,   {"cap":"Toggle line comment"            ,"cmd":"cmd_CommentLineToggle_AtStart"}
+        ,   {"cap":"Toggle line comment at nonspace","cmd":"cmd_CommentLineToggle_AtNonspace"}
+        ,   {"cap":"Toggle stream comment"          ,"cmd":"cmd_CommentStreamToggle"}
+        ]}
+    ]}
+,"top-sel":
+    {"how":"clear"
+    ,"sub":
+    [   {"cap":"Select all"                         ,"cmd":"cCommand_SelectAll"}
+    ,   {"cap":"Split selection into lines"         ,"cmd":"cCommand_SelectSplitToLines"}
+    ,   {"cap":"Extend selection by line"           ,"cmd":"cCommand_SelectExtendByLine"}
+    ,   {"cap":"Invert selection"                   ,"cmd":"cCommand_SelectInverted"}
+    ,   {"cap":"-"}
+    ,   {"cap":"Cancel carets"                      ,"cmd":"cCommand_Cancel"}
+    ,   {"cap":"Extend carets"                      ,"sub":
+        [   {"cap":"More carets, up, 1 line"        ,"cmd":"cCommand_CaretsExtendUpLine"}
+        ,   {"cap":"More carets, up, 1 page"        ,"cmd":"cCommand_CaretsExtendUpPage"}
+        ,   {"cap":"More carets, up, until begin"   ,"cmd":"cCommand_CaretsExtendUpToTop"}
+        ,   {"cap":"-"}
+        ,   {"cap":"More carets, down, 1 line"      ,"cmd":"CaretsExtendDownLine"}
+        ,   {"cap":"More carets, down, 1 page"      ,"cmd":"CaretsExtendDownPage"}
+        ,   {"cap":"More carets, down, until end"   ,"cmd":"CaretsExtendDownToEnd"}
+        ]}
+    ]}
+,"top-sr":
+    {"how":"clear"
+    ,"sub":
+    [   {"cap":"Find..."                    ,"cmd":"cmd_DialogFind"}
+    ,   {"cap":"Replace..."                 ,"cmd":"cmd_DialogReplace"}
+    ,   {"cap":"Find next"                  ,"cmd":"cmd_FindNext"}
+    ,   {"cap":"Find prev"                  ,"cmd":"cmd_FindPrev"}
+    ,   {"cap":"-"}
+    ,   {"cap":"Find current word next"     ,"cmd":"cmd_FindCurWordNext"}
+    ,   {"cap":"Find current word prev"     ,"cmd":"cmd_FindCurWordPrev"}
+    ,   {"cap":"Find current selection next","cmd":"cmd_FindCurSelNext"}
+    ,   {"cap":"Find current selection prev","cmd":"cmd_FindCurSelPrev"}
+    ,   {"cap":"-"}
+    ,   {"cap":"Go to line..."              ,"cmd":"cmd_DialogGoto"}
+    ,   {"cap":"Go to tag..."               ,"cmd":"cmd_DialogTabs"}
+    ,   {"cap":"Go to bookmark..."          ,"cmd":"cmd_DialogGotoBm"}
+    ,   {"cap":"Bookmarks"                  ,"sub":
+        [   {"cap":"Go to next bookmark"    ,"cmd":"cmd_BookmarkGotoNext"}
+        ,   {"cap":"Go to prev bookmark"    ,"cmd":"cmd_BookmarkGotoPrev"}
+        ,   {"cap":"-"}
+        ,   {"cap":"Toggle bookmark"        ,"cmd":"cmd_BookmarkToggle"}
+        ,   {"cap":"Inverse bookmarks"      ,"cmd":"cmd_BookmarkInvertAll"}
+        ,   {"cap":"Clear all bookmarks"    ,"cmd":"cmd_BookmarkClearAll"}
+        ]}
+    ]}
+,"top-view":
+    {"how":"clear"
+    ,"sub":
+    [   {"cap":"Groups"                 ,"sub":
+        [   {"cap":"One Group"          ,"cmd":"cmd_Groups1"}
+        ,   {"cap":"2 vert"             ,"cmd":"cmd_Groups2horz"}
+        ,   {"cap":"2 horz"             ,"cmd":"cmd_Groups2vert"}
+        ,   {"cap":"3 vert"             ,"cmd":"cmd_Groups3horz"}
+        ,   {"cap":"3 horz"             ,"cmd":"cmd_Groups3vert"}
+        ,   {"cap":"3 as 2+1"           ,"cmd":"cmd_Groups3plus"}
+        ,   {"cap":"4 vert"             ,"cmd":"cmd_Groups4horz"}
+        ,   {"cap":"4 horz"             ,"cmd":"cmd_Groups4vert"}
+        ,   {"cap":"4 grid"             ,"cmd":"cmd_Groups4grid"}
+        ,   {"cap":"6 grid"             ,"cmd":"cmd_Groups6grid"}
+        ]}
+    ,   {"cap":"Split tab"              ,"sub":
+        [   {"cap":"Split"              ,"cmd":"cmd_SplitTabToggle"}
+        ,   {"cap":"Split horizintal"   ,"cmd":"cmd_SplitTabHorzVert"}
+        ,   {"cap":"Split 30-70"        ,"cmd":"cmd_SplitTab3070"}
+        ,   {"cap":"Split 40-60"        ,"cmd":"cmd_SplitTab4060"}
+        ,   {"cap":"Split 50-50"        ,"cmd":"cmd_SplitTab5050"}
+        ,   {"cap":"Split 60-40"        ,"cmd":"cmd_SplitTab6040"}
+        ,   {"cap":"Split 70-30"        ,"cmd":"cmd_SplitTab7030"}
+        ]}
+    ,   {"cap":"Toggle word-wrap"       ,"cmd":"cCommand_ToggleWordWrap"}
+    ,   {"cap":"Toggle line numbers"    ,"cmd":"cCommand_ToggleLineNums"}
+    ,   {"cap":"Toggle code folding"    ,"cmd":"cCommand_ToggleFolding"}
+    ,   {"cap":"Toggle ruler"           ,"cmd":"cCommand_ToggleRuler"}
+    ,   {"cap":"Toggle minimap"         ,"cmd":"cCommand_ToggleMinimap"}
+    ,   {"cap":"Toggle unprinted chars" ,"sub":
+        [   {"cap":"Show"               ,"cmd":"cCommand_ToggleUnprinted"}
+        ,   {"cap":"-"}
+        ,   {"cap":"Show spaces/tabs"   ,"cmd":"cCommand_ToggleUnprintedSpaces"}
+        ,   {"cap":"Show ends"          ,"cmd":"cCommand_ToggleUnprintedEnds"}
+        ,   {"cap":"Show ends details"  ,"cmd":"cCommand_ToggleUnprintedEndDetails"}
+        ]}
+    ,   {"cap":"-"}
+    ,   {"cap":"Toggle toolbar"         ,"cmd":"cmd_ToggleToolbar"}
+    ,   {"cap":"Toggle statusbar"       ,"cmd":"cmd_ToggleStatusbar"}
+    ,   {"cap":"Toggle side panel"      ,"cmd":"cmd_ToggleSidePanel"}
+    ,   {"cap":"Toggle bottom panel"    ,"cmd":"cmd_ToggleBottomPanel"}
+    ,   {"cap":"Toggle full screen"     ,"cmd":"cmd_ToggleFullScreen"}
+    ]}
+,"text":
+    {"how":"clear"
+    ,"sub":
+    [   {"cap":"Undo"                   ,"cmd":"cCommand_Undo"}
+    ,   {"cap":"Redo"                   ,"cmd":"cCommand_Redo"}
+    ,   {"cap":"-"}
+    ,   {"cap":"Cut"                    ,"cmd":"cCommand_ClipboardCut"}
+    ,   {"cap":"Copy"                   ,"cmd":"cCommand_ClipboardCopy"}
+    ,   {"cap":"Paste"                  ,"cmd":"cCommand_ClipboardPaste"}
+    ,   {"cap":"Delete"                 ,"cmd":"cCommand_KeyDelete"}
+    ,   {"cap":"Select all"             ,"cmd":"cCommand_SelectAll"}
+    ,   {"cap":"-"}
+    ,   {"cap":"Go to definition"       ,"cmd":"cmd_GotoDefinition"}
+    ,   {"cap":"AutoComplete"           ,"cmd":"cmd_AutoComplete"}
+    ]}
+}
