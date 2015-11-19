@@ -17,7 +17,7 @@
     ,   {"cap":"Encoding"           ,"sub":
         [   {"cap":"Reload as"      ,"sub":
             [   {"cap":"ANSI"           ,"cmd":"cmd_Encoding_ansi_Reload"}
-            ,   {"cap":"UTF-8"          ,"cmd":"cmd_Encoding_utf8_Reload"}
+            ,   {"cap":"UTF-8 bom"      ,"cmd":"cmd_Encoding_utf8bom_Reload"}
             ,   {"cap":"UTF-8 no bom"   ,"cmd":"cmd_Encoding_utf8nobom_Reload"}
             ,   {"cap":"UTF-16 le"      ,"cmd":"cmd_Encoding_utf16le_Reload"}
             ,   {"cap":"UTF-16 be"      ,"cmd":"cmd_Encoding_utf16be_Reload"}
@@ -29,7 +29,7 @@
             ]}
         ,    {"cap":"Convert to"    ,"sub":
             [   {"cap":"ANSI"           ,"cmd":"cmd_Encoding_ansi_NoReload"}
-            ,   {"cap":"UTF-8"          ,"cmd":"cmd_Encoding_utf8_NoReload"}
+            ,   {"cap":"UTF-8 bom"      ,"cmd":"cmd_Encoding_utf8bom_NoReload"}
             ,   {"cap":"UTF-8 no bom"   ,"cmd":"cmd_Encoding_utf8nobom_NoReload"}
             ,   {"cap":"UTF-16 le"      ,"cmd":"cmd_Encoding_utf16le_NoReload"}
             ,   {"cap":"UTF-16 be"      ,"cmd":"cmd_Encoding_utf16be_NoReload"}

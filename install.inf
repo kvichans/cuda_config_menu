@@ -1,9 +1,29 @@
 [info]
-title=Config menu
-desc=Config menu items
+title=Config Menu
+desc=Allows to customize CudaText top/context menus, using JSON files
 type=cudatext-plugin
 subdir=cuda_config_menu
 
 [item1]
 section=events
-events=on_start
+events=on_start,on_focus
+
+[item2]
+section=commands
+caption=Config menu\Apply
+method=config_menus
+
+[item3]
+section=commands
+caption=Config menu\Settings...
+method=config_menus_settings
+
+[item4]
+section=commands
+caption=Config menu\Help
+method=config_menus_help
+
+[item5]
+section=commands
+caption=Config menu\Open config file
+method=config_menus_open

@@ -1,3 +1,9 @@
 
+0.9.1 (2015-11-19)
+Added: commands in submenu Plugins/Config menu
+Added: githab Help page 
+Added: dlg Settings 
+Added: on_focus, on_start 
+
 0.8.0 (2015-11-18)
 init
