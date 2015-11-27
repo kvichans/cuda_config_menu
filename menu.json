@@ -248,7 +248,7 @@
     ,   {"cap":"Cut"                    ,"cmd":"cCommand_ClipboardCut"}
     ,   {"cap":"Copy"                   ,"cmd":"cCommand_ClipboardCopy"}
     ,   {"cap":"Paste"                  ,"cmd":"cCommand_ClipboardPaste"}
-    ,   {"cap":"Delete"                 ,"cmd":"cCommand_KeyDelete"}
+    ,   {"cap":"Delete"                 ,"cmd":"cCommand_TextDeleteSelection"}
     ,   {"cap":"Select all"             ,"cmd":"cCommand_SelectAll"}
     ,   {"cap":"-"}
     ,   {"cap":"Go to definition"       ,"cmd":"cmd_GotoDefinition"}
