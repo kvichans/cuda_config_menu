@@ -109,7 +109,7 @@
     ,   {"cap":"Delete"                     ,"cmd":"cCommand_KeyDelete"}
     ,   {"cap":"-"}
     ,   {"cap":"Copy to clipboard"          ,"sub":
-        [   {"cap":"Copy current line"      ,"cmd":"cCommand_ClipboardCopy"}
+        [   {"cap":"Copy current line"      ,"cmd":"cmd_CopyLine"}
         ,   {"cap":"Copy/append selection"  ,"cmd":"cCommand_ClipboardCopyAdd"}
         ,   {"cap":"-"}
         ,   {"cap":"Copy full filepath"     ,"cmd":"cmd_CopyFilenameFull"}
