@@ -25,9 +25,32 @@
                 [   {"cap":"CP1250"     ,"cmd":"cmd_Encoding_cp1250_Reload"}
                 ,   {"cap":"CP1251"     ,"cmd":"cmd_Encoding_cp1251_Reload"}
                 ,   {"cap":"CP1252"     ,"cmd":"cmd_Encoding_cp1252_Reload"}
+                ,   {"cap":"CP1253"     ,"cmd":"cmd_Encoding_cp1253_Reload"}
+                ,   {"cap":"CP1257"     ,"cmd":"cmd_Encoding_cp1257_Reload"}
+                ,   {"cap":"-"}
+                ,   {"cap":"CP437"      ,"cmd":"cmd_Encoding_cp437_Reload"}
+                ,   {"cap":"CP850"      ,"cmd":"cmd_Encoding_cp850_Reload"}
+                ,   {"cap":"CP852"      ,"cmd":"cmd_Encoding_cp852_Reload"}
+                ,   {"cap":"CP866"      ,"cmd":"cmd_Encoding_cp866_Reload"}
+                ,   {"cap":"-"}
+                ,   {"cap":"ISO-8859-1" ,"cmd":"cmd_Encoding_iso1_Reload"}
+                ,   {"cap":"ISO-8859-2" ,"cmd":"cmd_Encoding_iso2_Reload"}
+                ,   {"cap":"Macintosh"  ,"cmd":"cmd_Encoding_mac_Reload"}
+                ]}
+            ,   {"cap":"Misc"       ,"sub":
+                [   {"cap":"CP1254"     ,"cmd":"cmd_Encoding_cp1254_Reload"}
+                ,   {"cap":"CP1255"     ,"cmd":"cmd_Encoding_cp1255_Reload"}
+                ,   {"cap":"CP1256"     ,"cmd":"cmd_Encoding_cp1256_Reload"}
+                ]}
+            ,   {"cap":"Asian"       ,"sub":
+                [   {"cap":"CP874"      ,"cmd":"cmd_Encoding_cp874_Reload"}
+                ,   {"cap":"CP932"      ,"cmd":"cmd_Encoding_cp932_Reload"}
+                ,   {"cap":"CP936"      ,"cmd":"cmd_Encoding_cp936_Reload"}
+                ,   {"cap":"CP949"      ,"cmd":"cmd_Encoding_cp949_Reload"}
+                ,   {"cap":"CP1258"     ,"cmd":"cmd_Encoding_cp1258_Reload"}
                 ]}
             ]}
-        ,    {"cap":"Convert to"    ,"sub":
+        ,   {"cap":"Convert to"    ,"sub":
             [   {"cap":"ANSI"           ,"cmd":"cmd_Encoding_ansi_NoReload"}
             ,   {"cap":"UTF-8 bom"      ,"cmd":"cmd_Encoding_utf8bom_NoReload"}
             ,   {"cap":"UTF-8 no bom"   ,"cmd":"cmd_Encoding_utf8nobom_NoReload"}
@@ -37,6 +60,29 @@
                 [   {"cap":"CP1250"     ,"cmd":"cmd_Encoding_cp1250_NoReload"}
                 ,   {"cap":"CP1251"     ,"cmd":"cmd_Encoding_cp1251_NoReload"}
                 ,   {"cap":"CP1252"     ,"cmd":"cmd_Encoding_cp1252_NoReload"}
+                ,   {"cap":"CP1253"     ,"cmd":"cmd_Encoding_cp1253_NoReload"}
+                ,   {"cap":"CP1257"     ,"cmd":"cmd_Encoding_cp1257_NoReload"}
+                ,   {"cap":"-"}
+                ,   {"cap":"CP437"      ,"cmd":"cmd_Encoding_cp437_NoReload"}
+                ,   {"cap":"CP850"      ,"cmd":"cmd_Encoding_cp850_NoReload"}
+                ,   {"cap":"CP852"      ,"cmd":"cmd_Encoding_cp852_NoReload"}
+                ,   {"cap":"CP866"      ,"cmd":"cmd_Encoding_cp866_NoReload"}
+                ,   {"cap":"-"}
+                ,   {"cap":"ISO-8859-1" ,"cmd":"cmd_Encoding_iso1_NoReload"}
+                ,   {"cap":"ISO-8859-2" ,"cmd":"cmd_Encoding_iso2_NoReload"}
+                ,   {"cap":"Macintosh"  ,"cmd":"cmd_Encoding_mac_NoReload"}
+                ]}
+            ,   {"cap":"Misc"       ,"sub":
+                [   {"cap":"CP1254"     ,"cmd":"cmd_Encoding_cp1254_NoReload"}
+                ,   {"cap":"CP1255"     ,"cmd":"cmd_Encoding_cp1255_NoReload"}
+                ,   {"cap":"CP1256"     ,"cmd":"cmd_Encoding_cp1256_NoReload"}
+                ]}
+            ,   {"cap":"Asian"       ,"sub":
+                [   {"cap":"CP874"      ,"cmd":"cmd_Encoding_cp874_NoReload"}
+                ,   {"cap":"CP932"      ,"cmd":"cmd_Encoding_cp932_NoReload"}
+                ,   {"cap":"CP936"      ,"cmd":"cmd_Encoding_cp936_NoReload"}
+                ,   {"cap":"CP949"      ,"cmd":"cmd_Encoding_cp949_NoReload"}
+                ,   {"cap":"CP1258"     ,"cmd":"cmd_Encoding_cp1258_NoReload"}
                 ]}
             ]}
         ]}
@@ -104,6 +150,7 @@
         ,   {"cap":"Toggle line comment at nonspace","cmd":"cmd_CommentLineToggle_AtNonspace"}
         ,   {"cap":"Toggle stream comment"          ,"cmd":"cmd_CommentStreamToggle"}
         ]}
+    ,   {"cap":"Char map..."                 ,"cmd":"cmd_DialogCharMap"}
     ]}
 ,"top-sel":
     {"how":"clear"
@@ -139,7 +186,7 @@
     ,   {"cap":"-"}
     ,   {"cap":"Go to line..."              ,"cmd":"cmd_DialogGoto"}
     ,   {"cap":"Go to tag..."               ,"cmd":"cmd_DialogTabs"}
-    ,   {"cap":"Go to bookmark..."          ,"cmd":"cmd_DialogGotoBm"}
+    ,   {"cap":"Go to bookmark..."          ,"cmd":"cmd_DialogGotoBookmark"}
     ,   {"cap":"Bookmarks"                  ,"sub":
         [   {"cap":"Go to next bookmark"    ,"cmd":"cmd_BookmarkGotoNext"}
         ,   {"cap":"Go to prev bookmark"    ,"cmd":"cmd_BookmarkGotoPrev"}
