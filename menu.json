@@ -106,7 +106,7 @@
     ,   {"cap":"Cut"                        ,"cmd":"cCommand_ClipboardCut"}
     ,   {"cap":"Copy"                       ,"cmd":"cCommand_ClipboardCopy"}
     ,   {"cap":"Paste"                      ,"cmd":"cCommand_ClipboardPaste"}
-    ,   {"cap":"Delete"                     ,"cmd":"cCommand_KeyDelete"}
+    ,   {"cap":"Delete"                     ,"cmd":"cCommand_TextDeleteSelection"}
     ,   {"cap":"-"}
     ,   {"cap":"Copy to clipboard"          ,"sub":
         [   {"cap":"Copy current line"      ,"cmd":"cmd_CopyLine"}
@@ -130,6 +130,9 @@
         ,   {"cap":"Trim spaces: left"      ,"cmd":"cCommand_TextTrimSpacesLeft"}
         ,   {"cap":"Trim spaces: right"     ,"cmd":"cCommand_TextTrimSpacesRight"}
         ,   {"cap":"Trim spaces: all"       ,"cmd":"cCommand_TextTrimSpacesAll"}
+        ,   {"cap":"-"}
+        ,   {"cap":"Convert tabs to spaces"             ,"cmd":"cmd_ConvertTabsToSpaces"}
+        ,   {"cap":"Convert spaces (leading) to tabs "  ,"cmd":"cmd_ConvertSpacesToTabsLeading"}
         ]}
     ,   {"cap":"Convert case"               ,"sub":
         [   {"cap":"Upper case"             ,"cmd":"cCommand_TextCaseUpper"}
