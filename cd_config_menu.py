@@ -1,6 +1,6 @@
 ''' Plugin for CudaText editor
 Authors:
-    Andrey Kvichansky    (kvichans on githab)
+    Andrey Kvichansky    (kvichans on github)
 Version:
     '0.9.2 2015-12-15'
 '''
@@ -43,6 +43,8 @@ pass;                           LOG = (-2==-2)  # Do or dont logging.
 
 last_file_cfg       = ('', 0)
 
+CMD_NMS         = [nm for nm in dir(cmds) if nm.startswith('cCommand_') or nm.startswith('cmd_')]
+
 def _reset_menu(mn_prnt_id, mn_items):
     pass;                       #LOG and apx.log('>>mn_prnt_id, mn_items={}',(mn_prnt_id, pfrm15(mn_items)))
     for mn_item in mn_items:
@@ -58,7 +60,7 @@ def _reset_menu(mn_prnt_id, mn_items):
             app.app_proc(           app.PROC_MENU_ADD, '{};{};{}'.format(mn_prnt_id, '',    cap))
         elif ''!=cmd:
             # Cmd!
-            cmd = str(eval('cmds.'+cmd)) if cmd.startswith('cmd_') or cmd.startswith('cCommand_') else cmd
+            cmd = str(eval('cmds.'+cmd)) if cmd in CMD_NMS else cmd
             app.app_proc(           app.PROC_MENU_ADD, '{};{};{}'.format(mn_prnt_id, cmd,   cap))
         elif subs:
             # Submenu!
