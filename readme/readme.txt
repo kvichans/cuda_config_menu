@@ -1,8 +1,8 @@
 Plugin for CudaText.
-Config menu items on start app. 
-Default config file is
+Configures menus, top and context menu (on app start). 
+Default config file:
 	settings\menu.json
-Other file can uses by opt
+Other file can be set by option in user.json:
 	"config_menus_from"
 
 Author: Andrey Kvichanskiy (kvichans, at forum)
@@ -11,51 +11,48 @@ Author: Andrey Kvichanskiy (kvichans, at forum)
 ==========
 What parts of menus can be configured?
 ==========
-CudaText (for version "0.9.8") allows:
-    Change all items of main menu (File/Edit/...).
-    Change all items of File except submenu Open recent.
-    Change all items of Edit, Selection, Search, View.
-    No changeable items in Plugins, Options, Help (but its are complemented).
-    Change all items of local menu for main text.
-    No changeable items in other local menus.
 
-Change all means that you can rename/skip/move all native items and can add any others. 
-Indeed you can at first clear all native items and then to fill with needed. Or save native and add needed to the end.
+    Can change items of main menu (File, Edit, ...).
+    Can change items of File except submenu "Open recent".
+    Can change items of Edit, Selection, Search, View, Options, Help.
+    Can change items of context menu for editor text.
+    Not changeable items in other context menus (for gutter, for tab header...)
 
-Three submenus (Plugins, Options, Help) dont allow to clear but allow to add new items.
+Can-change means that you can rename/remove/move all native items and can add any others. 
+Indeed you can first clear all native items and then add needed ones. Or keep native items and add needed to the end.
 
-Filling likes to create a tree as you can add not only commands but submenus too. 
+Filling menus is like creating a tree, you can not only add items, but add submenus of any level.
 Note that some submenus are autofilled:
     "recents" - recent-files submenu (natively in File)
     "themes" - Color-themes submenu (natively in Options)
     "plugins" - Plugins submenu (natively as item of main menu)
 
-Need commands you can find in two collections:
-    Part of native commands (see names into py\cudatext_cmd.py start with cmd_ or cCommand_)
-    All plugin commands (see install.inf files for all installed plugin or/and items of settings\plugins.json)
+Needed commands you can find in two collections:
+    Native commands (see names in file py\cudatext_cmd.py, which start with cmd_ or cCommand_)
+    All plugins commands (see install.inf files for all installed plugins, or items in settings\plugins.json)
 
 ==========
 Settings
 ==========
-After plugin installation (and once app start) file menu.json appears in directory settings. 
-It allows to repeat (not all but almost) native menus and it is good to start experiments.
+After plugin installation (and restart of app) file menu.json appears in directory settings. 
+It allows to repeat (not all but most) native menus and it is good to start experiments.
 
-Settings for plugin:
-    Option "config_menus_from" point to config file name (as "menu.json") which will be searched into directory settings.
-    Option "config_menus_on_start" with values true/false to apply config file when app starts.
-    Option "config_menus_on_focus" with values true/false to apply config file when text editor gets focus. 
-		Only true allows to use adaptive menus (lexer-menus).
+Settings for plugin in user.json:
+    Option "config_menus_from" - config file name (e.g. "menu.json") which will be read from dir settings.
+    Option "config_menus_on_start" - values true/false - to apply config file when app starts.
+    Option "config_menus_on_focus" - values true/false - to apply config file when text editor gets focus. 
+		Only true-value here allows to use adaptive menus (menus for current lexer).
 
-Better to rename file menu.json to my-menu.json and to write new value in user.json for key "config_menus_from". 
-Source menu.json can be updated in the future with upgrade of plugin/app.
+Better to rename file menu.json to my-menu.json and to write option "config_menus_from" in user.json. 
+Original menu.json can be updated in the future with plugin update.
 
-Note that key "config_menus_from" can has different values for different lexers. 
-Thus you can use lexer-menus. 
-For this you can open current lexer settings (Options/Settings - more/Settings - lexer overide) and set value for key "config_menus_from".
+Note that option "config_menus_from" can have different values for different lexers. 
+Thus you can use lexer-specific menus. 
+For this you can open current lexer settings (Options/ Settings - more/ Settings - lexer overide) and set value for option "config_menus_from".
 
 Example:
     In settings/user.json
-        "config_menus_from":"my-menu.json" (all my menus)
+        "config_menus_from":"my-menu.json" (sets all my menus)
     In settings/lexer Python.json
         "config_menus_from":"menu Python.json" (changes for menus to work with Python)
     In settings/lexer JSON.json
@@ -72,12 +69,21 @@ Brief view of file content:
 
 Notes
     Root keys (like "top-file" and "top-help" above) must be only from the list
-        "top","top-file","top-edit","top-sel","top-sr","top-view","top-op","top-help","text"
-    You can use any subset of the list. Lexer-menus can rebuild only context menu ("text").
-    Root key "top" uses to rebuild main menu. You can use other names (Find instead Search), change order, skip something (Help?) or add new items.
-    Root key "text" uses to rebuild context (local) menu for editing text.
-    Pair "how":"clear" uses to fill as empty. It is default.
-    Pair "how":"add" uses to fill at end.
+        "top",
+        "top-file",
+        "top-edit",
+        "top-sel",
+        "top-sr",
+        "top-view",
+        "top-op",
+        "top-help",
+        "text"
+    You can use any subset of the list. 
+    Lexer-menus can rebuild only context menu ("text").
+    Root key "top" is to rebuild main menu. You can use other menuitem names (eg "Find" instead of "Search"), change order, skip something (e.g. Help) or add new items.
+    Root key "text" is to rebuild context (local) menu for editor text.
+    Pair "how":"clear" is to clear all items. It is default.
+    Pair "how":"add" is to add items at end.
 
 Brief view of one branch:
   "top-file":{
@@ -95,7 +101,7 @@ Brief view of one branch:
 
 Notes
     Value for key "cap" is caption for item or submenu.
-    Pair "cap":"-" uses to add menu separator.
+    Pair "cap":"-" means menu separator.
     Values for key "cmd" are
-        names from py\cudatext_cmd.py (start with cmd_ or cCommand_),
+        names from py\cudatext_cmd.py (starting with cmd_ or cCommand_),
         strings "module,method" for any plugin module and method in it.
