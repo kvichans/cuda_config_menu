@@ -1,4 +1,7 @@
 
+0.9.2 (2016-02-13)
+rework: config dialog
+
 0.9.1 (2015-11-19)
 Added: commands in submenu Plugins/Config menu
 Added: githab Help page 

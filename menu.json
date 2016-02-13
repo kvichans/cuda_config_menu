@@ -188,7 +188,6 @@
     ,   {"cap":"Find current selection prev","cmd":"cmd_FindCurSelPrev"}
     ,   {"cap":"-"}
     ,   {"cap":"Go to line..."              ,"cmd":"cmd_DialogGoto"}
-    ,   {"cap":"Go to tag..."               ,"cmd":"cmd_DialogTabs"}
     ,   {"cap":"Go to bookmark..."          ,"cmd":"cmd_DialogGotoBookmark"}
     ,   {"cap":"Bookmarks"                  ,"sub":
         [   {"cap":"Go to next bookmark"    ,"cmd":"cmd_BookmarkGotoNext"}
@@ -208,7 +207,8 @@
         ,   {"cap":"2 horz"             ,"cmd":"cmd_Groups2vert"}
         ,   {"cap":"3 vert"             ,"cmd":"cmd_Groups3horz"}
         ,   {"cap":"3 horz"             ,"cmd":"cmd_Groups3vert"}
-        ,   {"cap":"3 as 2+1"           ,"cmd":"cmd_Groups3plus"}
+        ,   {"cap":"1+2 vert"           ,"cmd":"cmd_Groups3plus"}
+        ,   {"cap":"1+2 horz"           ,"cmd":"cmd_Groups3plushorz"}
         ,   {"cap":"4 vert"             ,"cmd":"cmd_Groups4horz"}
         ,   {"cap":"4 horz"             ,"cmd":"cmd_Groups4vert"}
         ,   {"cap":"4 grid"             ,"cmd":"cmd_Groups4grid"}
