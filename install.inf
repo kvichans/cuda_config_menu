@@ -3,27 +3,38 @@ title=Config Menu
 desc=Allows to customize CudaText top/context menus, using JSON files
 type=cudatext-plugin
 subdir=cuda_config_menu
+homepage=https://github.com/kvichans/cuda_config_menu
 
 [item1]
 section=events
 events=on_start,on_focus
 
-[item2]
+[item20]
 section=commands
-caption=Config menu\Apply
-method=config_menus
+caption=Config menu...
+method=dlg_config
 
-[item3]
-section=commands
-caption=Config menu\Settings...
-method=config_menus_settings
-
-[item4]
-section=commands
-caption=Config menu\Help
-method=config_menus_help
-
-[item5]
-section=commands
-caption=Config menu\Open config file
-method=config_menus_open
+;[item2]
+;section=commands
+;caption=Config menu\Apply
+;method=config_menus
+;
+;[item3]
+;section=commands
+;caption=Config menu\Settings...
+;method=config_menus_settings
+;
+;[item4]
+;section=commands
+;caption=Config menu\Help
+;method=config_menus_help
+;
+;[item5]
+;section=commands
+;caption=Config menu\Open config file
+;method=config_menus_open
+;
+;[item6]
+;section=commands
+;caption=Config menu\Save all menus to file
+;method=save_menu_to_json
