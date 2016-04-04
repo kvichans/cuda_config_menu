@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.0.1 2016-03-31'
+    '1.0.2 2016-04-04'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -137,8 +137,8 @@ C2      = chr(2)
 POS_FMT = 'pos={l},{t},{r},{b}'.format
 GAP     = 5
 
-SPEC_IDS= [ 'recents',  'themes',  'langs'#,  'enc'
-          ,'_recents', '_themes', '_langs'#, '_enc'
+SPEC_IDS= [ 'recents',  'themes',  'langs',  'enc',  'lexers'
+          ,'_recents', '_themes', '_langs', '_enc', '_lexers'
           , 'plugins']
 def _reset_menu_hnt(mnu_list, prnt_id=None, _prnt_cap_path=''):
     if prnt_id is None:
@@ -171,15 +171,18 @@ def _reset_menu_hnt(mnu_list, prnt_id=None, _prnt_cap_path=''):
         elif hnt in SPEC_IDS:
             # Autofilled core submenu
             app.app_proc(           app.PROC_MENU_ADD, f('{};{};{}', prnt_id, hnt, cap))
-        elif hnt and hnt[0]=='_' and ',' in hnt:
+        elif hnt and hnt[0]=='_' and ':' in hnt:
             # Autofilled plugin submenu
             id_sub  = app.app_proc( app.PROC_MENU_ADD, f('{};{};{}', prnt_id, hnt, cap))
-            cmd4plug= hnt[1:]
+            cmd4plug= hnt[1:].replace(':', ',')
             pass;               LOG and log('?? PROC_EXEC_PLUGIN id_sub={} cmd4plug={}',id_sub,cmd4plug)
             app.app_proc(           app.PROC_EXEC_PLUGIN, f('{},{}', cmd4plug, id_sub))
             pass;               LOG and log('ok PROC_EXEC_PLUGIN',id_sub)
+        elif ',' in cmd_s:
+            # Plugin Cmd!
+            app.app_proc(           app.PROC_MENU_ADD, f('{};{};{}', prnt_id, cmd_s, cap))
         elif cmd_s:
-            # Cmd!
+            # Core Cmd!
             if not hnt and cmd_s not in CMD_NMS:
                 pass;           LOG and log('Error "unk cmd": _prnt_cap_path={} mnu_dict={}',_prnt_cap_path,mnu_dict)
                 continue#for mnu_dict
@@ -258,6 +261,7 @@ def _save_menu_to_json(save_to=None):
             
             if hnt in SPEC_IDS :
                 # Autofilled submenu
+                pass;           LOG and log('auto spec',)
                 mnu    += [OrdDct( [('cap' ,nmn)]
                                  + [('hint',hnt)]
                                  +([('cmd' ,mid)] if mid and not mid[0].isdecimal() else []) )]
@@ -306,11 +310,13 @@ def _save_menu_to_json(save_to=None):
     mnu     = scan_menu_tree()
     pass;                  #LOG and log('mnu={}',mnu)
     jstx    = json.dumps(mnu, indent=2)
-    jstx    = re.sub(r'{\s*"'       ,r'{"'  ,jstx)
-    jstx    = re.sub(r'"\s*}'       ,r'"}'  ,jstx)
-    jstx    = re.sub(r'"\s*,\s*"'   ,r'", "',jstx)
-    jstx    = re.sub(r'"\s*:\s*"'   ,r'":"' ,jstx)
-    jstx    = re.sub(r'\]\s*}'      ,r']}'  ,jstx)
+    jstx    = re.sub(r'{\s*"'       ,r'{"'      ,jstx)
+    jstx    = re.sub(r'"\s*}'       ,r'"}'      ,jstx)
+    jstx    = re.sub(r'"\s*,\s*"'   ,r'", "'    ,jstx)
+    jstx    = re.sub(r'"\s*:\s*"'   ,r'":"'     ,jstx)
+    jstx    = re.sub(r'\]\s*}'      ,r']}'      ,jstx)
+    jstx    = re.sub(r'\},(\s+) {'  ,r'}\1,{'   ,jstx)
+    jstx    = jstx.replace('  ]}', ']}')
     if not save_to:
         save_to = app.dlg_file(False, '', '', 'Config|*.json')
         if not save_to: return # app.msg_box(jstx, app.MB_OK)
@@ -321,13 +327,13 @@ class Command:
     def __init__(self):
         self.config_menus_on_focus  = apx.get_opt('config_menus_on_focus', False)
     
-    def save_menu_to_json(self, save_to=None):
+    def _save_menu_to_json(self, save_to=None):
         ''' Save current menu to json-file
         '''
         FROM_API_VERSION= '1.0.132' # result of PROC_MENU_ENUM has item_id
         if app.app_api_version()<FROM_API_VERSION:  return app.msg_status(_('Need update CudaText'))
         _save_menu_to_json(save_to)
-       #def save_menu_to_json
+       #def _save_menu_to_json
         
     def on_start(self, ed_self):
         if not apx.get_opt('config_menus_1st_done', False):
@@ -357,16 +363,16 @@ class Command:
         config_menus()
        #def config_menus
 
-    def config_menus_open(self):
-        cfg_json    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
-        cfg_json    = os.path.join(app.app_path(app.APP_DIR_SETTINGS), cfg_json)
-        app.file_open(cfg_json)
-       #def config_menus_open
+#   def config_menus_open(self):
+#       cfg_json    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
+#       cfg_json    = os.path.join(app.app_path(app.APP_DIR_SETTINGS), cfg_json)
+#       app.file_open(cfg_json)
+#      #def config_menus_open
 
-    def config_menus_help(self):
-        webbrowser.open_new_tab(REF_HELP_CFG_MENU)
-        app.msg_status(_('Opened in browser'))
-       #def config_menus_help
+#   def config_menus_help(self):
+#       webbrowser.open_new_tab(REF_HELP_CFG_MENU)
+#       app.msg_status(_('Opened in browser'))
+#      #def config_menus_help
 
     def dlg_config(self):
         cfg_file    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
@@ -374,7 +380,7 @@ class Command:
         cfg_on_focus= apx.get_opt('config_menus_on_focus', False)
         cnts=[dict(           tp='lb'   ,t=GAP      ,l=GAP      ,w=300          ,cap=_('Confi&g file (default folder is "settings")')   ) #  &g
              ,dict(cid='file',tp='ed'   ,t=GAP+18   ,l=GAP      ,w=300-80                                                               ) #  
-             ,dict(cid='brow',tp='bt'   ,tid='file' ,l=GAP+300-80,w=80          ,cap=_('S&elect...')                                    ) #  &.
+             ,dict(cid='brow',tp='bt'   ,tid='file' ,l=GAP+300-80,w=80          ,cap=_('Select&...')                                    ) #  &.
              ,dict(cid='edit',tp='bt'   ,t=50       ,l=GAP      ,w=110          ,cap=_('&Edit')                                         ) #  &e
              ,dict(cid='test',tp='bt'   ,t=50       ,l=GAP+110  ,w=110          ,cap=_('&Test')
                                                                         ,hint=_('Control correctness of selected file')                 ) #  &t
@@ -414,13 +420,6 @@ class Command:
                 self.config_menus_on_focus  = apx.get_opt('config_menus_on_focus', False)
                 return
             
-#           elif btn=='just':
-#               cfg_path    = os.path.join(app.app_path(app.APP_DIR_SETTINGS), vals['file'])
-#               if not os.path.isfile(cfg_path):
-#                   app.msg_box(_('Choose existed file'), app.MB_OK)
-#                   continue#while
-#               config_menus(cfg_path)
-            
             elif btn=='brow':
                 cfg_file_new= app.dlg_file(True, vals['file'], app.app_path(app.APP_DIR_SETTINGS), 'Config|*.json')
                 if not cfg_file_new:continue#while
@@ -431,7 +430,7 @@ class Command:
             elif btn=='save':
                 save_to = app.dlg_file(False, '', app.app_path(app.APP_DIR_SETTINGS), 'Config|*.json')
                 if not save_to:     continue#while
-                self.save_menu_to_json(save_to)
+                self._save_menu_to_json(save_to)
                 app.file_open(save_to)
 
             elif btn in ('edit', 'test', 'just'):
@@ -442,7 +441,12 @@ class Command:
                 if btn=='edit':
                     app.file_open(cfg_path)
                 try:
-                    json.loads(open(cfg_path).read())
+                    s = open(cfg_path).read()
+                    s = re.sub(r'{(\s*),' , r'{\1 ', s)
+                    s = re.sub(r',(\s*)}' , r' \1}', s)
+                    s = re.sub(r'\[(\s*),', r'[\1 ', s)
+                    s = re.sub(r',(\s*)\]', r' \1]', s)
+                    json.loads(s)
                     if btn=='test':
                         app.msg_box(_('Correct JSON'), app.MB_OK)
                 except Exception as ex:
@@ -459,39 +463,40 @@ class Command:
             elif btn=='help':
                 HELP_BODY   = \
 _('''Config file has JSON format.
-Main container is list with items pointed menus to remake.
-  Examples of correct items for main container:
-  {"cap":"", "hint":"text", "sub": [???]}          - local editor menu
-  {"cap":"", "hint":"top", "sub": [???]}           - whole main menu
-  {"cap":"&File", "hint":"top-file", "sub": [???]} - main submenu File
-  {"cap":"&Edit", "hint":"top-ed", "sub": [???]}   - main submenu Edit
-"cap" value is free (any language). 
-  Sign "&" pointed accelerator character.
-"hint" value is free but there are spec values
-  "text"       for local editor menu
-  "top"        for whole main menu
+Main container is list of items, which create menu elements.
+  Examples of correct items in main container:
+  {"cap":"", "hint":"text", "sub": [???]}          - context menu
+  {"cap":"", "hint":"top", "sub": [???]}           - main menu
+  {"cap":"&File", "hint":"top-file", "sub": [???]} - main menu, submenu File
+  {"cap":"&Edit", "hint":"top-ed", "sub": [???]}   - main menu, submenu Edit
+"cap" value can be any (in any language).
+    Char "&" is hotkey accelerator character.
+"hint" value can be any, but predefined values exist
+  "text" is special hint for context menu
+  "top" is special hint for main menu
   "recents", 
   "themes", 
   "langs", 
-  "plugins"    for autofilled submenus
+  "plugins" are special hints for autofilled submenus
 "sub" value must be list of separator, commands or submenu items. 
-Separator item:  {"cap":"-"}
-Command item:    {"cap":"<free>", "cmd":"???"}
-"cmd" value:
-  A name cCommand_* or cmd_* from cudatext_cmd.py for core command
-  <plugin>.<method>[.<param>] for plugin command
-Submenu item:    {"cap":"<free>", "hint":"<spec/free>", "sub":[???]}
--------------------------------------
-Convenient way to create special menu
+Separator item: {"cap":"-"}
+Command item:   {"cap":"<any>", "cmd":"???"}
+"cmd" value can be:
+  Identifiers cCommand_* or cmd_* from module cudatext_cmd.py
+  <plugin>,<method>[,<param>] for plugin commands
+Submenu item:   {"cap":"<any>", "hint":"<special/any>", "sub":[???]}
+----------------------------------------
+Convenient way to customize menu
 1. Call "Create config file..." to get JSON copy of default CudaText menu.
-2. Move/Translate/Delete/Insert items.
-3. Save to new file and point it as "Config file".
-4. Switch on "Apply on start".
------
+2. Move/Copy/Translate/Delete/Insert items.
+3. Save to new file and specify it as "Config file".
+4. Turn on option "Apply on start".
+----
 Tips
 1. Any command/submenu (except "text" and "top") can be used many times.
-For example submenu File can be useed in local menu.
-2. Item {"cap":"", "hint":"top", "sub": []} hides main menu. It's correct. 
+  For example submenu File can be copied to context menu.
+2. Item {"cap":"", "hint":"top", "sub": []} hides main menu. 
+  It's correct state. 
 ''')
                 dlg_wrapper(_('Help for "Config menu"'), GAP*2+600, GAP*3+25+550,
                      [dict(cid='htx',tp='me'    ,t=GAP  ,h=550  ,l=GAP          ,w=600  ,props='1,1,1' ) #  ro,mono,border
@@ -502,136 +507,134 @@ For example submenu File can be useed in local menu.
            #while True:
        #def dlg_config
 
-    def config_menus_settings(self):
-        cfg_file    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
-        cfg_on_start= apx.get_opt('config_menus_on_start', True)
-        cfg_on_focus= apx.get_opt('config_menus_on_focus', False)
-
-        at4btn      = top_plus_for_os('button')
-        at_l4b      = top_plus_for_os('label', 'button')
-        at_l4c      = top_plus_for_os('label', 'check')
-        at_b4c      = top_plus_for_os('button', 'check')
-        while True:
-            DLG_W, DLG_H= GAP+300+GAP, GAP+160+GAP
-            ans = app.dlg_custom('Settings for "Config menu"'   ,DLG_W, DLG_H, '\n'.join([]
-            +[C1.join(['type=label'     ,POS_FMT(l=GAP,             t=GAP,              r=DLG_W,b=0)
-                      ,'cap='+_('&Config file (default folder is "settings")')
-                      ])] # i= 0
-            +[C1.join(['type=edit'      ,POS_FMT(l=GAP,             t=GAP+18,           r=DLG_W-GAP-50,b=0)
-                      ,'val='+cfg_file
-                      ])] # i= 1
-            +[C1.join(['type=button'    ,POS_FMT(l=DLG_W-GAP-50,    t=GAP+18+at4btn,    r=DLG_W-GAP,b=0)
-                      ,'cap=&...'
-                      ])] # i= 2
-
-            +[C1.join(['type=label'     ,POS_FMT(l=GAP,             t=50+at_l4c,        r=GAP+150,b=0)
-                      ,'cap='+_('When configure:')
-                      ])] # i= 3
-            +[C1.join(['type=check'     ,POS_FMT(l=GAP+120,         t=50,               r=GAP+120+150,b=0)
-                      ,'cap='+_('On &start')
-                      ,'hint='+_('Once when CudaText starts')
-                      ,'val='+('1' if cfg_on_start else '0')
-                      ])] # i= 4
-            +[C1.join(['type=check'     ,POS_FMT(l=GAP+120,         t=75,               r=GAP+120+150,b=0)
-                      ,'cap='+_('On &focus')
-                      ,'hint='+_("When any text gets focus, lexer's or common menu sets")
-                      ,'val='+('1' if cfg_on_focus else '0')
-                      ])] # i= 5
-            +[C1.join(['type=button'     ,POS_FMT(l=GAP+120,        t=103+at_b4c,       r=DLG_W-GAP-50,b=0)
-                      ,'cap='+_('Just &now')
-                      ])] # i= 6
-
-            +[C1.join(['type=linklabel' ,POS_FMT(l=GAP,             t=DLG_H-30+at_l4b,  r=GAP+50,b=0)
-                      ,'cap=Help'
-                      ,'props='+REF_HELP_CFG_MENU #url
-                      ])] # i= 7
-            +[C1.join(['type=button'    ,POS_FMT(l=DLG_W-160,       t=DLG_H-30,         r=DLG_W-80,b=0)
-                      ,'cap=OK'
-                      ,'props=1' #default
-                      ])] # i= 8
-            +[C1.join(['type=button'    ,POS_FMT(l=DLG_W-75,        t=DLG_H-30,         r=DLG_W-GAP,b=0)
-                      ,'cap=Cancel'
-                      ])] # i= 9
-            ), 1)    # start focus
-            if ans is None:  
-                return None
-            (ans_i
-            ,vals)      = ans
-            vals        = vals.splitlines()
-            ans_s       = apx.icase(False,''
-                           ,ans_i== 2,'browse'
-                           ,ans_i== 6,'apply'
-                           ,ans_i== 8,'ok'
-                           ,ans_i== 9,'cancel'
-                           )
-            if ans_s == 'cancel':
-                return
-            cfg_file    = vals[ 1]
-            cfg_on_start= vals[ 4]=='1'
-            cfg_on_focus= vals[ 5]=='1'
-            
-            cfg_path    = os.path.join(app.app_path(app.APP_DIR_SETTINGS), cfg_file)
-            if False:pass
-            elif ans_s == 'ok':
-                #Checks
-                if (cfg_on_start or cfg_on_focus) and not os.path.isfile(cfg_path):
-                    app.msg_box(_('Choose existed file'), app.MB_OK)
-                    focused = 1
-                    continue #while
-                break #while
-            
-            elif ans_s=='apply':
-                if not os.path.isfile(cfg_path):
-                    app.msg_box(_('Choose existed file'), app.MB_OK)
-                    focused = 1
-                    continue #while
-                config_menus(cfg_path)
-            
-            elif ans_s=='browse':
-                cfg_file_new= app.dlg_file(True, cfg_file, app.app_path(app.APP_DIR_SETTINGS), 'Config|*.json')
-                if cfg_file_new is None:
-                    continue
-                cfg_file    = cfg_file_new
-                if os.path.dirname(cfg_file)==app.app_path(app.APP_DIR_SETTINGS):
-                    cfg_file= os.path.basename(cfg_file)
-           #while true
-
-        if cfg_file     != apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE):
-            apx.set_opt('config_menus_from',     cfg_file)
-        if cfg_on_start != apx.get_opt('config_menus_on_start', True):
-            apx.set_opt('config_menus_on_start', cfg_on_start)
-        if cfg_on_focus != apx.get_opt('config_menus_on_focus', False):
-            apx.set_opt('config_menus_on_focus', cfg_on_focus)
-       #def config_menus_settings
-
-    def config_menus_settings_old(self):
-        cfg_file    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
-        cfg_on_start= apx.get_opt('config_menus_on_start', True)
-        cfg_on_focus= apx.get_opt('config_menus_on_focus', False)
-        anses       = app.dlg_input_ex(3, "Settings for 'Config menu'"
-                        , _('&Config file (default folder is "settings")'), cfg_file
-                        , _('On &start'), 'Y' if cfg_on_start else 'N'
-                        , _('On &focus'), 'Y' if cfg_on_focus else 'N'
-                        )
-        if anses is None:
-            return
-        if anses[0]!=cfg_file:
-            apx.set_opt('config_menus_from', anses[0])
-        if ('Y'==anses[1])!=cfg_on_start:
-            apx.set_opt('config_menus_on_start', ('Y'==anses[1]))
-        if ('Y'==anses[2])!=cfg_on_focus:
-            apx.set_opt('config_menus_on_focus', ('Y'==anses[2]))
-       #def config_menus_settings
+#   def config_menus_settings(self):
+#       cfg_file    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
+#       cfg_on_start= apx.get_opt('config_menus_on_start', True)
+#       cfg_on_focus= apx.get_opt('config_menus_on_focus', False)
+#
+#       at4btn      = top_plus_for_os('button')
+#       at_l4b      = top_plus_for_os('label', 'button')
+#       at_l4c      = top_plus_for_os('label', 'check')
+#       at_b4c      = top_plus_for_os('button', 'check')
+#       while True:
+#           DLG_W, DLG_H= GAP+300+GAP, GAP+160+GAP
+#           ans = app.dlg_custom('Settings for "Config menu"'   ,DLG_W, DLG_H, '\n'.join([]
+#           +[C1.join(['type=label'     ,POS_FMT(l=GAP,             t=GAP,              r=DLG_W,b=0)
+#                     ,'cap='+_('&Config file (default folder is "settings")')
+#                     ])] # i= 0
+#           +[C1.join(['type=edit'      ,POS_FMT(l=GAP,             t=GAP+18,           r=DLG_W-GAP-50,b=0)
+#                     ,'val='+cfg_file
+#                     ])] # i= 1
+#           +[C1.join(['type=button'    ,POS_FMT(l=DLG_W-GAP-50,    t=GAP+18+at4btn,    r=DLG_W-GAP,b=0)
+#                     ,'cap=&...'
+#                     ])] # i= 2
+#
+#           +[C1.join(['type=label'     ,POS_FMT(l=GAP,             t=50+at_l4c,        r=GAP+150,b=0)
+#                     ,'cap='+_('When configure:')
+#                     ])] # i= 3
+#           +[C1.join(['type=check'     ,POS_FMT(l=GAP+120,         t=50,               r=GAP+120+150,b=0)
+#                     ,'cap='+_('On &start')
+#                     ,'hint='+_('Once when CudaText starts')
+#                     ,'val='+('1' if cfg_on_start else '0')
+#                     ])] # i= 4
+#           +[C1.join(['type=check'     ,POS_FMT(l=GAP+120,         t=75,               r=GAP+120+150,b=0)
+#                     ,'cap='+_('On &focus')
+#                     ,'hint='+_("When any text gets focus, lexer's or common menu sets")
+#                     ,'val='+('1' if cfg_on_focus else '0')
+#                     ])] # i= 5
+#           +[C1.join(['type=button'     ,POS_FMT(l=GAP+120,        t=103+at_b4c,       r=DLG_W-GAP-50,b=0)
+#                     ,'cap='+_('Just &now')
+#                     ])] # i= 6
+#
+#           +[C1.join(['type=linklabel' ,POS_FMT(l=GAP,             t=DLG_H-30+at_l4b,  r=GAP+50,b=0)
+#                     ,'cap=Help'
+#                     ,'props='+REF_HELP_CFG_MENU #url
+#                     ])] # i= 7
+#           +[C1.join(['type=button'    ,POS_FMT(l=DLG_W-160,       t=DLG_H-30,         r=DLG_W-80,b=0)
+#                     ,'cap=OK'
+#                     ,'props=1' #default
+#                     ])] # i= 8
+#           +[C1.join(['type=button'    ,POS_FMT(l=DLG_W-75,        t=DLG_H-30,         r=DLG_W-GAP,b=0)
+#                     ,'cap=Cancel'
+#                     ])] # i= 9
+#           ), 1)    # start focus
+#           if ans is None:  
+#               return None
+#           (ans_i
+#           ,vals)      = ans
+#           vals        = vals.splitlines()
+#           ans_s       = apx.icase(False,''
+#                          ,ans_i== 2,'browse'
+#                          ,ans_i== 6,'apply'
+#                          ,ans_i== 8,'ok'
+#                          ,ans_i== 9,'cancel'
+#                          )
+#           if ans_s == 'cancel':
+#               return
+#           cfg_file    = vals[ 1]
+#           cfg_on_start= vals[ 4]=='1'
+#           cfg_on_focus= vals[ 5]=='1'
+#           
+#           cfg_path    = os.path.join(app.app_path(app.APP_DIR_SETTINGS), cfg_file)
+#           if False:pass
+#           elif ans_s == 'ok':
+#               #Checks
+#               if (cfg_on_start or cfg_on_focus) and not os.path.isfile(cfg_path):
+#                   app.msg_box(_('Choose existed file'), app.MB_OK)
+#                   focused = 1
+#                   continue #while
+#               break #while
+#           
+#           elif ans_s=='apply':
+#               if not os.path.isfile(cfg_path):
+#                   app.msg_box(_('Choose existed file'), app.MB_OK)
+#                   focused = 1
+#                   continue #while
+#               config_menus(cfg_path)
+#           
+#           elif ans_s=='browse':
+#               cfg_file_new= app.dlg_file(True, cfg_file, app.app_path(app.APP_DIR_SETTINGS), 'Config|*.json')
+#               if cfg_file_new is None:
+#                   continue
+#               cfg_file    = cfg_file_new
+#               if os.path.dirname(cfg_file)==app.app_path(app.APP_DIR_SETTINGS):
+#                   cfg_file= os.path.basename(cfg_file)
+#          #while true
+#
+#       if cfg_file     != apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE):
+#           apx.set_opt('config_menus_from',     cfg_file)
+#       if cfg_on_start != apx.get_opt('config_menus_on_start', True):
+#           apx.set_opt('config_menus_on_start', cfg_on_start)
+#       if cfg_on_focus != apx.get_opt('config_menus_on_focus', False):
+#           apx.set_opt('config_menus_on_focus', cfg_on_focus)
+#      #def config_menus_settings
+#
+#   def config_menus_settings_old(self):
+#       cfg_file    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
+#       cfg_on_start= apx.get_opt('config_menus_on_start', True)
+#       cfg_on_focus= apx.get_opt('config_menus_on_focus', False)
+#       anses       = app.dlg_input_ex(3, "Settings for 'Config menu'"
+#                       , _('&Config file (default folder is "settings")'), cfg_file
+#                       , _('On &start'), 'Y' if cfg_on_start else 'N'
+#                       , _('On &focus'), 'Y' if cfg_on_focus else 'N'
+#                       )
+#       if anses is None:
+#           return
+#       if anses[0]!=cfg_file:
+#           apx.set_opt('config_menus_from', anses[0])
+#       if ('Y'==anses[1])!=cfg_on_start:
+#           apx.set_opt('config_menus_on_start', ('Y'==anses[1]))
+#       if ('Y'==anses[2])!=cfg_on_focus:
+#           apx.set_opt('config_menus_on_focus', ('Y'==anses[2]))
+#      #def config_menus_settings
 
     def translate(msg):
         return _(msg)
-        foo = _(r'Config menu\Apply')
-        foo = _(r'Config menu\Settings...')
-        foo = _(r'Config menu\Help')
-        foo = _(r'Config menu\Open config file')
+        foo = _(r'Config &menu...')
    #class Command
 
 '''
 ToDo
 [ ][kv-kv][20nov15] Bind/unbind events
+[ ][kv-kv][04apr16] Need Help for plugins with autofilled submenu
 '''

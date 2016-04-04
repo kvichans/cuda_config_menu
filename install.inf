@@ -9,9 +9,9 @@ homepage=https://github.com/kvichans/cuda_config_menu
 section=events
 events=on_start,on_focus
 
-[item20]
+[item2]
 section=commands
-caption=Config menu...
+caption=Config &menu...
 method=dlg_config
 
 ;[item2]

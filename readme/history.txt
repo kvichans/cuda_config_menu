@@ -1,5 +1,8 @@
+1.0.2 (2016-04-04)
+fixed: Autofilled plugin's submenu
+
 1.0.1 (2016-03-31)
-Added: save cur menus to json 
+added: save cur menus to json 
 rework: config dialog
 delete: all command except config
 
@@ -7,10 +10,10 @@ delete: all command except config
 rework: config dialog
 
 0.9.1 (2015-11-19)
-Added: commands in submenu Plugins/Config menu
-Added: githab Help page 
-Added: dlg Settings 
-Added: on_focus, on_start 
+added: commands in submenu Plugins/Config menu
+added: githab Help page 
+added: dlg Settings 
+added: on_focus, on_start 
 
 0.8.0 (2015-11-18)
 init
