@@ -11,7 +11,7 @@ events=on_start,on_focus
 
 [item2]
 section=commands
-caption=Config &menu...
+caption=Config &Menu
 method=dlg_config
 
 ;[item2]

@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.0.2 2016-04-04'
+    '1.0.3 2016-05-06'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -267,8 +267,8 @@ def _save_menu_to_json(save_to=None):
                                  +([('cmd' ,mid)] if mid and not mid[0].isdecimal() else []) )]
                 continue 
             
-            if hnt and hnt[0]=='_' and ',' in hnt:
-                # Autofilled submenu as '_cuda_exttools,adapt_menu'
+            if hnt and hnt[0]=='_' and ':' in hnt:
+                # Autofilled submenu as '_cuda_exttools:adapt_menu'
                 mnu    += [OrdDct( [('cap' ,nmn)]
                                  + [('hint',hnt)]
                                  +([('cmd' ,mid)] if mid and not mid[0].isdecimal() else []) )]
@@ -392,7 +392,7 @@ class Command:
                                                                         ,hint=_("When any text gets focus, lexer's or common menu sets")) #  &f
              ,dict(cid='just',tp='bt'   ,tid='on_s' ,l=115      ,w=110          ,cap=_('&Apply now')                                    ) #  &a
              ,dict(cid='help',tp='bt'   ,t=180  ,l=GAP          ,w=80           ,cap=_('&Help...')                                      ) #  &h
-             ,dict(cid='!'   ,tp='bt'   ,t=180  ,l=GAP+300-160  ,w=80           ,cap=_('OK')  ,props='1'                                ) #     default
+             ,dict(cid='!'   ,tp='bt'   ,t=180  ,l=GAP+300-160  ,w=80           ,cap=_('Save')  ,props='1'                              ) #     default
              ,dict(cid='-'   ,tp='bt'   ,t=180  ,l=GAP+300-80   ,w=80           ,cap=_('Close')                                         ) #  
              ]
         vals=dict(file=cfg_file
