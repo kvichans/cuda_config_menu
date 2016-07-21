@@ -400,7 +400,7 @@ class Command:
                  ,on_f='1' if cfg_on_focus else '0'
                  )
         while True:
-            btn, vals = dlg_wrapper(_('Config menu'), GAP+300+GAP, GAP+200+GAP, cnts, vals, focus_cid='file')
+            btn, vals, chds = dlg_wrapper(_('Config menu'), GAP+300+GAP, GAP+200+GAP, cnts, vals, focus_cid='file')
             if btn is None or btn=='-':    return
 
             if False:pass
