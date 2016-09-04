@@ -378,29 +378,29 @@ class Command:
         cfg_file    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
         cfg_on_start= apx.get_opt('config_menus_on_start', True)
         cfg_on_focus= apx.get_opt('config_menus_on_focus', False)
-        cnts=[dict(           tp='lb'   ,t=GAP      ,l=GAP      ,w=300          ,cap=_('Confi&g file (default folder is "settings")')   ) #  &g
-             ,dict(cid='file',tp='ed'   ,t=GAP+18   ,l=GAP      ,w=300-80                                                               ) #  
-             ,dict(cid='brow',tp='bt'   ,tid='file' ,l=GAP+300-80,w=80          ,cap=_('Select&...')                                    ) #  &.
-             ,dict(cid='edit',tp='bt'   ,t=50       ,l=GAP      ,w=110          ,cap=_('&Edit')                                         ) #  &e
-             ,dict(cid='test',tp='bt'   ,t=50       ,l=GAP+110  ,w=110          ,cap=_('&Test')
+        cnts=[dict(           tp='lb'   ,t=GAP      ,l=GAP      ,w=320          ,cap=_('Confi&g file (default folder is "settings")')   ) #  &g
+             ,dict(cid='file',tp='ed'   ,t=GAP+18   ,l=GAP      ,w=320-80                                                               ) #  
+             ,dict(cid='brow',tp='bt'   ,tid='file' ,l=GAP+320-80,w=80          ,cap=_('Select&...')                                    ) #  &.
+             ,dict(cid='edit',tp='bt'   ,t=50       ,l=GAP      ,w=120          ,cap=_('&Edit')                                         ) #  &e
+             ,dict(cid='test',tp='bt'   ,t=50       ,l=GAP+120  ,w=120          ,cap=_('&Test')
                                                                         ,hint=_('Control correctness of selected file')                 ) #  &t
-             ,dict(cid='save',tp='bt'   ,t=75       ,l=GAP      ,w=300-80       ,cap=_('&Create config file...')
+             ,dict(cid='save',tp='bt'   ,t=75       ,l=GAP      ,w=320-80       ,cap=_('&Create config file...')
                                                                         ,hint=_('Save all current menus to file')                       ) #  &c
              ,dict(cid='on_s',tp='ch'   ,t=120      ,l=GAP      ,w=100          ,cap=_('Apply on &start')
                                                                         ,hint=_('Once when CudaText starts')                            ) #  &s
              ,dict(cid='on_f',tp='ch'   ,t=145      ,l=GAP      ,w=100          ,cap=_('Apply on &focus')
                                                                         ,hint=_("When any text gets focus, lexer's or common menu sets")) #  &f
-             ,dict(cid='just',tp='bt'   ,tid='on_s' ,l=115      ,w=110          ,cap=_('&Apply now')                                    ) #  &a
+             ,dict(cid='just',tp='bt'   ,tid='on_s' ,l=135      ,w=110          ,cap=_('&Apply now')                                    ) #  &a
              ,dict(cid='help',tp='bt'   ,t=180  ,l=GAP          ,w=80           ,cap=_('&Help...')                                      ) #  &h
-             ,dict(cid='!'   ,tp='bt'   ,t=180  ,l=GAP+300-160  ,w=80           ,cap=_('Save')  ,props='1'                              ) #     default
-             ,dict(cid='-'   ,tp='bt'   ,t=180  ,l=GAP+300-80   ,w=80           ,cap=_('Close')                                         ) #  
+             ,dict(cid='!'   ,tp='bt'   ,t=180  ,l=GAP+320-160  ,w=80           ,cap=_('Save')  ,props='1'                              ) #     default
+             ,dict(cid='-'   ,tp='bt'   ,t=180  ,l=GAP+320-80   ,w=80           ,cap=_('Close')                                         ) #  
              ]
         vals=dict(file=cfg_file
                  ,on_s='1' if cfg_on_start else '0'
                  ,on_f='1' if cfg_on_focus else '0'
                  )
         while True:
-            btn, vals, chds = dlg_wrapper(_('Config menu'), GAP+300+GAP, GAP+200+GAP, cnts, vals, focus_cid='file')
+            btn, vals, chds = dlg_wrapper(_('Config menu'), GAP+320+GAP, GAP+200+GAP, cnts, vals, focus_cid='file')
             if btn is None or btn=='-':    return
 
             if False:pass
