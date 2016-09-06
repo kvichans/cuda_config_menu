@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.0.3 2016-05-06'
+    '1.0.4 2016-09-06'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -35,7 +35,7 @@ _                   = get_translation(__file__)
 pass;                           # Logging
 pass;                           from pprint import pformat
 pass;                           pfrm15=lambda d:pformat(d,width=15)
-pass;                           LOG = (2==-2)  # Do or dont logging.
+pass;                           LOG = (-2== 2)  # Do or dont logging.
 
 last_file_cfg       = ('', 0)
 
@@ -137,8 +137,8 @@ C2      = chr(2)
 POS_FMT = 'pos={l},{t},{r},{b}'.format
 GAP     = 5
 
-SPEC_IDS= [ 'recents',  'themes',  'langs',  'enc',  'lexers'
-          ,'_recents', '_themes', '_langs', '_enc', '_lexers'
+SPEC_IDS= [ 'recents',  'langs',  'enc',  'lexers'
+          ,'_recents', '_langs', '_enc', '_lexers', '_themes-ui', '_themes-syntax'
           , 'plugins']
 def _reset_menu_hnt(mnu_list, prnt_id=None, _prnt_cap_path=''):
     if prnt_id is None:
