@@ -1,3 +1,7 @@
+1.1.01 (2017-06-21)
+rework: config dialog
+fixed: avoid deprecated api
+
 1.0.4 (2016-09-06)
 fixed: themes submenus
 fixed: dlg layout

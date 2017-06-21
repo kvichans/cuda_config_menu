@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.0.4 2016-09-06'
+    '1.1.01 2017-06-21'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -11,6 +11,9 @@ from    cudatext        import ed
 import  cudatext_cmd        as cmds
 import  cudax_lib           as apx
 from    .cd_plug_lib    import *
+
+MIN_API_VER = '1.0.172' # menu_proc() <== PROC_MENU_*
+MIN_API_VER = '1.0.185' # menu_proc() with hotkey,tag
 
 # Menu config
 PROC_MENU_TOP       = 'top'
@@ -41,7 +44,7 @@ last_file_cfg       = ('', 0)
 
 CMD_NMS         = [nm for nm in dir(cmds) if nm.startswith('cCommand_') or nm.startswith('cmd_')]
 
-def _reset_menu(mn_prnt_id, mn_items):
+def _reset_menu_old(mn_prnt_id, mn_items):
     pass;                      #LOG and apx.log('>>mn_prnt_id, mn_items={}',(mn_prnt_id, pfrm15(mn_items)))
     for mn_item in mn_items:
         cap     = mn_item.get('cap', '').strip()
@@ -53,20 +56,20 @@ def _reset_menu(mn_prnt_id, mn_items):
         elif '-'==cap:
             # Sep!
             pass
-            app.app_proc(           app.PROC_MENU_ADD, '{};{};{}'.format(mn_prnt_id, '',    cap))
+            app.menu_proc(          mn_prnt_id, app.MENU_ADD, caption=cap)
         elif ''!=cmd:
             # Cmd!
             pass;              #LOG and apx.log('ok cmd={}',(cmd))
             cmd = str(eval('cmds.'+cmd)) if cmd in CMD_NMS else cmd
-            app.app_proc(           app.PROC_MENU_ADD, '{};{};{}'.format(mn_prnt_id, cmd,   cap))
+            app.menu_proc(          mn_prnt_id, app.MENU_ADD, command=cmd, caption=cap)
         elif subs:
             # Submenu!
-            id_sub  = app.app_proc( app.PROC_MENU_ADD, '{};{};{}'.format(mn_prnt_id, 0,     cap))
+            id_sub  = app.menu_proc(mn_prnt_id, app.MENU_ADD, command=cap)
             pass;              #LOG and apx.log('?? id_sub, subs={}',(id_sub, subs))
-            _reset_menu(id_sub, subs)
+            _reset_menu_old(id_sub, subs)
             pass;              #LOG and apx.log('ok id_sub, subs={}',(id_sub, subs))
     pass;                      #LOG and apx.log('<<')
-   #def _reset_menu
+   #def _reset_menu_old
 
 def config_menus(mn_cfg_json=''):
     ''' Reset some menus from config file
@@ -126,8 +129,8 @@ def config_menus(mn_cfg_json=''):
                 app.msg_status(_('Skip config for id="{}" - no such main submenu').format(mn_pre_id))
                 continue # for mn_pre_id
             if mn_pre.get('how', 'add') == 'clear':
-                app.app_proc(app.PROC_MENU_CLEAR, mn_pre_id)
-            _reset_menu(mn_pre_id, mn_pre.get('sub', []))
+                app.menu_proc(  mn_pre_id, app.MENU_CLEAR)
+            _reset_menu_old(    mn_pre_id, mn_pre.get('sub', []))
         print(         _('OK config menus from "{}"').format(mn_cfg_json))
         app.msg_status(_('OK config menus from "{}"').format(mn_cfg_json))
    #def config_menus
@@ -137,9 +140,13 @@ C2      = chr(2)
 POS_FMT = 'pos={l},{t},{r},{b}'.format
 GAP     = 5
 
-SPEC_IDS= [ 'recents',  'langs',  'enc',  'lexers'
-          ,'_recents', '_langs', '_enc', '_lexers', '_themes-ui', '_themes-syntax'
-          , 'plugins']
+SPEC_IDS= { 'recents':'_recents',  'langs':'_langs',  'enc':'_enc',  'lexers':'_lexers'
+          ,'_recents':'_recents', '_langs':'_langs', '_enc':'_enc', '_lexers':'_lexers'
+          ,  'plugins':'_plugins'
+          , '_plugins':'_plugins'
+          , '_themes-ui':'_themes-ui'
+          , '_themes-syntax':'_themes-syntax'
+          }
 def _reset_menu_hnt(mnu_list, prnt_id=None, _prnt_cap_path=''):
     if prnt_id is None:
         # Start with root nodes: toppest, capless
@@ -148,7 +155,7 @@ def _reset_menu_hnt(mnu_list, prnt_id=None, _prnt_cap_path=''):
             pass;              #LOG and log('mnu_dict={}',mnu_dict)
             top_id  = mnu_dict['hint']
             pass;               LOG and log('top_id={}',top_id)
-            app.app_proc(app.PROC_MENU_CLEAR, top_id)
+            app.menu_proc(                    top_id, app.MENU_CLEAR)
             _reset_menu_hnt(mnu_dict['sub'],  top_id)
         pass;                   LOG and log('END',)
         return
@@ -158,6 +165,7 @@ def _reset_menu_hnt(mnu_list, prnt_id=None, _prnt_cap_path=''):
     for mnu_dict in mnu_list:
         pass;                  #LOG and log('mnu_dict={}',mnu_dict)
         cap     = mnu_dict.get('cap'    ,'')
+        tag     = mnu_dict.get('tag'    ,'')
         hnt     = mnu_dict.get('hint'   ,'')
         cmd_s   = mnu_dict.get('cmd'    ,'')
         pass;                  #LOG and log('cap,hnt,cmd_s={}',(cap,hnt,cmd_s))
@@ -167,31 +175,36 @@ def _reset_menu_hnt(mnu_list, prnt_id=None, _prnt_cap_path=''):
         elif '-'==cap:
             # Sep!
             pass
-            app.app_proc(           app.PROC_MENU_ADD, f('{};;-', prnt_id))
+            app.menu_proc(          prnt_id, app.MENU_ADD, caption=cap)
         elif hnt in SPEC_IDS:
             # Autofilled core submenu
-            app.app_proc(           app.PROC_MENU_ADD, f('{};{};{}', prnt_id, hnt, cap))
+            app.menu_proc(          prnt_id, app.MENU_ADD, command=SPEC_IDS[hnt], caption=cap)
+        elif tag.startswith('auto_config:'):
+            # Autofilled plugin submenu
+            cmd4plug= tag[len('auto_config:'):]
+            id_sub  = app.menu_proc(prnt_id, app.MENU_ADD, command=hnt, caption=cap)
+            app.app_proc(           app.PROC_EXEC_PLUGIN, f('{},{}', cmd4plug, id_sub))
         elif hnt and hnt[0]=='_' and ':' in hnt:
             # Autofilled plugin submenu
-            id_sub  = app.app_proc( app.PROC_MENU_ADD, f('{};{};{}', prnt_id, hnt, cap))
+            id_sub  = app.menu_proc(prnt_id, app.MENU_ADD, command=hnt, caption=cap)
             cmd4plug= hnt[1:].replace(':', ',')
             pass;               LOG and log('?? PROC_EXEC_PLUGIN id_sub={} cmd4plug={}',id_sub,cmd4plug)
             app.app_proc(           app.PROC_EXEC_PLUGIN, f('{},{}', cmd4plug, id_sub))
             pass;               LOG and log('ok PROC_EXEC_PLUGIN',id_sub)
-        elif ',' in cmd_s:
+        elif ',' in cmd_s or '.' in cmd_s or ';' in cmd_s:
             # Plugin Cmd!
-            app.app_proc(           app.PROC_MENU_ADD, f('{};{};{}', prnt_id, cmd_s, cap))
+            app.menu_proc(          prnt_id, app.MENU_ADD, command=cmd_s, caption=cap)
         elif cmd_s:
             # Core Cmd!
             if not hnt and cmd_s not in CMD_NMS:
                 pass;           LOG and log('Error "unk cmd": _prnt_cap_path={} mnu_dict={}',_prnt_cap_path,mnu_dict)
                 continue#for mnu_dict
             hnt     = hnt if hnt else str(eval('cmds.'+cmd_s))
-            app.app_proc(           app.PROC_MENU_ADD, f('{};{};{}', prnt_id, hnt, cap))
+            app.menu_proc(          prnt_id, app.MENU_ADD, command=hnt, caption=cap)
         else:
             # Submenu!
             hnt     = hnt if hnt else '0'
-            id_sub  = app.app_proc( app.PROC_MENU_ADD, f('{};{};{}', prnt_id, hnt, cap))
+            id_sub  = app.menu_proc(prnt_id, app.MENU_ADD, command=hnt, caption=cap)
             pass;              #LOG and apx.log('?? id_sub, subs={}',(id_sub, subs))
             sub     = mnu_dict.get('sub')
             if not sub or not isinstance(sub, list):
@@ -239,54 +252,61 @@ def _save_menu_to_json(save_to=None):
             pass;               LOG and log('END',)
             return mnu
         pass;                   LOG and log('>> prnt_id={}, hnt_path={}',prnt_id, hnt_path)
-        enums   = app.app_proc(app.PROC_MENU_ENUM, prnt_id)
-        if not enums:
-            pass;               LOG and log('<< enums==None',)
-            return None
-        nmu_its = [it.split('|') for it in enums.splitlines()]
-        pass;                  #LOG and log('nmu_nhis={}',nmu_nhis)
+        nmu_its = app.menu_proc(prnt_id, app.MENU_ENUM)  ##??
+#       pass;                   LOG and log('nmu_its={}',nmu_its)
         mnu         = []
-        for nmn,hnt,mid in nmu_its:
-#           mid     = HINT2MID.get(hnt, mid)
-            pass;               LOG and log('nmn,hnt,mid={}',(nmn,hnt,mid))
-#           if  prnt_id=='top' and hnt[0] in ('0', '_') :
-#                 Top menu-item from plugins      as Macros/Tools
-#               pass;           LOG and log('prnt_id==top and hnt==0 ',)
-#               continue 
-#           
+        for nmu_it in nmu_its:
+            pass;               LOG and log('nmu_it={}',nmu_it)
+            nmn = nmu_it['cap']
+            cmd = nmu_it['cmd']
+            hnt = nmu_it['hint']
+            mid = nmu_it['id']
+            tag = nmu_it['tag']
+            pass;               LOG and log('nmn,cmd,hnt,mid,tag={}',(nmn,cmd,hnt,mid.tag))
+
             if nmn=='-':
                 # Sep
-                mnu    += [OrdDct([('cap','-')])]
+                mnu    += [OrdDct( [('cap' ,'-')])]
                 continue 
             
             if hnt in SPEC_IDS :
                 # Autofilled submenu
-                pass;           LOG and log('auto spec',)
+                pass;           LOG and LOG and log('auto spec',)
                 mnu    += [OrdDct( [('cap' ,nmn)]
-                                 + [('hint',hnt)]
-                                 +([('cmd' ,mid)] if mid and not mid[0].isdecimal() else []) )]
+                                 + [('hint',hnt)] )]
+                continue 
+            
+            if tag.startswith('auto_config:'):
+                # Autofilled submenu as Tools
+                mnu    += [OrdDct( [('cap' ,nmn)]
+                                 + [('tag' ,tag)] )]
                 continue 
             
             if hnt and hnt[0]=='_' and ':' in hnt:
-                # Autofilled submenu as '_cuda_exttools:adapt_menu'
+                # Autofilled submenu as Tools
                 mnu    += [OrdDct( [('cap' ,nmn)]
-                                 + [('hint',hnt)]
-                                 +([('cmd' ,mid)] if mid and not mid[0].isdecimal() else []) )]
+                                 + [('hint',hnt)] )]
+                continue 
+            
+            if cmd==-1 and ('.' in hnt or ';' in hnt):
+                # Plugin method
+                mnu    += [OrdDct( [('cap', nmn)]
+                                 + [('cmd', hnt)] )]
                 continue 
             
             # SubMenu?
-            is_sub  = bool(app.app_proc(app.PROC_MENU_ENUM, mid))
+            is_sub  = bool(app.menu_proc(mid, app.MENU_ENUM))
             if is_sub:
                 # SubMenu
                 pass;           LOG and log('SubMenu: nmn,hnt,mid={}',(nmn,hnt,mid))
                 submnu  = scan_menu_tree(mid, hnt_path+'/'+hnt, prnt_id, prnt_nm+'/'+nmn)
                 mnu    += [OrdDct( [('cap' ,nmn)]
                                  +([('hint',hnt)] if hnt else [])
-                                 +([('cmd' ,mid)] if mid and not mid[0].isdecimal() else [])
                                  + [('sub' ,submnu)] )]
                 continue 
 
-            # Command!
+            # Core command!
+            pass;               LOG and log('Core/plugin: nmn,hnt,cmd={}',(nmn,hnt,cmd))
             if False:pass
             elif '/enc/' in hnt_path or '/_enc/' in hnt_path:
                 # Encoding cmd?
@@ -295,12 +315,14 @@ def _save_menu_to_json(save_to=None):
                         ,ENC2CMD.get(cmd, cmd)
                         ,'' if '/enc_reload' in hnt_path else 'No')
             else:
-                cmd = cmD2cmN.get(hnt, hnt)
+                cmd = cmD2cmN.get(str(cmd), str(cmd))
+#               cmd = cmD2cmN.get(hnt, hnt)
             pass;               LOG and log('Core/plugin: nmn,hnt,cmd={}',(nmn,hnt,cmd))
             mnu    += [OrdDct( [('cap' ,nmn)]
 #                            +([('hint',hnt)] if hnt else [])
                              + [('cmd' ,cmd)] )]
-           #for nmn,hnt,mid
+#           pass;               break#only 1st cmd
+           #for nmu_it
         pass;                   LOG and log('<< #mnu={} prnt_id={}, hnt_path={}',len(mnu), prnt_id, hnt_path)
         return mnu
             
@@ -311,6 +333,7 @@ def _save_menu_to_json(save_to=None):
     pass;                  #LOG and log('mnu={}',mnu)
     jstx    = json.dumps(mnu, indent=2)
     jstx    = re.sub(r'{\s*"'       ,r'{"'      ,jstx)
+    jstx    = re.sub(r'(\d)\s+}'    ,r'\1}'     ,jstx)
     jstx    = re.sub(r'"\s*}'       ,r'"}'      ,jstx)
     jstx    = re.sub(r'"\s*,\s*"'   ,r'", "'    ,jstx)
     jstx    = re.sub(r'"\s*:\s*"'   ,r'":"'     ,jstx)
@@ -325,6 +348,7 @@ def _save_menu_to_json(save_to=None):
 
 class Command:
     def __init__(self):
+        self.already    = False
         self.config_menus_on_focus  = apx.get_opt('config_menus_on_focus', False)
     
     def _save_menu_to_json(self, save_to=None):
@@ -345,6 +369,7 @@ class Command:
                 shutil.copy(mn_cfg_src, mn_cfg_trg)
             apx.set_opt('config_menus_1st_done', True)
         if apx.get_opt('config_menus_on_start', True):
+            self.already    = True
             config_menus()
        #def on_start
 
@@ -356,10 +381,12 @@ class Command:
     def on_focus(self, ed_self):
         pass;                  #LOG and apx.log('')
         if self.config_menus_on_focus:
+            self.already    = True
             config_menus()
        #def on_focus
 
     def config_menus(self):
+        self.already    = True
         config_menus()
        #def config_menus
 
@@ -375,33 +402,42 @@ class Command:
 #      #def config_menus_help
 
     def dlg_config(self):
+        def rgb_to_int(r,g,b):    return r | (g<<8) | (b<<16)
         cfg_file    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
         cfg_on_start= apx.get_opt('config_menus_on_start', True)
         cfg_on_focus= apx.get_opt('config_menus_on_focus', False)
-        cnts=[dict(           tp='lb'   ,t=GAP      ,l=GAP      ,w=320          ,cap=_('Confi&g file (default folder is "settings")')   ) #  &g
-             ,dict(cid='file',tp='ed'   ,t=GAP+18   ,l=GAP      ,w=320-80                                                               ) #  
-             ,dict(cid='brow',tp='bt'   ,tid='file' ,l=GAP+320-80,w=80          ,cap=_('Select&...')                                    ) #  &.
-             ,dict(cid='edit',tp='bt'   ,t=50       ,l=GAP      ,w=120          ,cap=_('&Edit')                                         ) #  &e
-             ,dict(cid='test',tp='bt'   ,t=50       ,l=GAP+120  ,w=120          ,cap=_('&Test')
-                                                                        ,hint=_('Control correctness of selected file')                 ) #  &t
-             ,dict(cid='save',tp='bt'   ,t=75       ,l=GAP      ,w=320-80       ,cap=_('&Create config file...')
-                                                                        ,hint=_('Save all current menus to file')                       ) #  &c
-             ,dict(cid='on_s',tp='ch'   ,t=120      ,l=GAP      ,w=100          ,cap=_('Apply on &start')
-                                                                        ,hint=_('Once when CudaText starts')                            ) #  &s
-             ,dict(cid='on_f',tp='ch'   ,t=145      ,l=GAP      ,w=100          ,cap=_('Apply on &focus')
-                                                                        ,hint=_("When any text gets focus, lexer's or common menu sets")) #  &f
-             ,dict(cid='just',tp='bt'   ,tid='on_s' ,l=135      ,w=110          ,cap=_('&Apply now')                                    ) #  &a
-             ,dict(cid='help',tp='bt'   ,t=180  ,l=GAP          ,w=80           ,cap=_('&Help...')                                      ) #  &h
-             ,dict(cid='!'   ,tp='bt'   ,t=180  ,l=GAP+320-160  ,w=80           ,cap=_('Save')  ,props='1'                              ) #     default
-             ,dict(cid='-'   ,tp='bt'   ,t=180  ,l=GAP+320-80   ,w=80           ,cap=_('Close')                                         ) #  
-             ]
         vals=dict(file=cfg_file
                  ,on_s='1' if cfg_on_start else '0'
                  ,on_f='1' if cfg_on_focus else '0'
                  )
         while True:
-            btn, vals, chds = dlg_wrapper(_('Config menu'), GAP+320+GAP, GAP+200+GAP, cnts, vals, focus_cid='file')
+            cnts=[
+                  dict(cid='save',tp='bt'   ,t=  5      ,l=5        ,w=350          ,cap=_('&Create config file...')    ,en=not self.already
+                                                                            ,hint=_('Save all current menus to file.'
+                                                                                    '\rOnly for native CudaText menus.')+(
+                                                                                  _('\rReload CudaText with '
+                                                                                    '\r   [ ] Apply on start') if self.already else '')     ) #  &c
+                 ,dict(           tp='clr'  ,t= 40,l=0,w=1000,h=1           ,props=f('0,{},0,0',rgb_to_int(185,185,185))                    ) #
+
+                 ,dict(           tp='lb'   ,tid='edit' ,l=5        ,w=350          ,cap=_('Confi&g file (default folder is "settings")')   ) #  &g
+                 ,dict(cid='edit',tp='bt'   ,t= 50      ,l=5+350-80 ,w=80           ,cap=_('&Open')                                         ) #  &o
+                 ,dict(cid='file',tp='ed'   ,t= 75      ,l=5        ,w=350-80                                                               ) #  
+                 ,dict(cid='brow',tp='bt'   ,tid='file' ,l=5+350-80 ,w=80           ,cap=_('Select&...')                                    ) #  &.
+                 ,dict(cid='on_s',tp='ch'   ,t=110      ,l=5        ,w=100          ,cap=_('Apply on &start')
+                                                                            ,hint=_('Once when CudaText starts')                            ) #  &s
+                 ,dict(cid='on_f',tp='ch'   ,t=135      ,l=5        ,w=100          ,cap=_('Apply on &focus')
+                                                                            ,hint=_("When any text gets focus, lexer's or common menu sets")) #  &f
+                 ,dict(cid='just',tp='bt'   ,tid='on_s' ,l=5+120    ,w=150          ,cap=_('&Apply now')
+                                                                            ,hint=_('Apply the file once'
+                                                                                    '\rShift+Click - Control correctness of the file')      ) #  &a
+                 ,dict(cid='help',tp='bt'   ,t=170      ,l=5        ,w=80           ,cap=_('&Help...')                                      ) #  &h
+                 ,dict(cid='!'   ,tp='bt'   ,t=170      ,l=5+350-160,w=80           ,cap=_('Save')  ,props='1'                              ) #     default
+                 ,dict(cid='-'   ,tp='bt'   ,t=170      ,l=5+350-80 ,w=80           ,cap=_('Close')                                         ) #  
+                 ]
+            btn, vals, chds = dlg_wrapper(_('Config menu'), 5+350+5, 5+190+5, cnts, vals, focus_cid='file')
             if btn is None or btn=='-':    return
+            scam    = app.app_proc(app.PROC_GET_KEYSTATE, '')
+            btn_m   = scam + '/' + btn if scam and scam!='a' else btn   # smth == a/smth
 
             if False:pass
             elif btn=='!':
@@ -428,12 +464,16 @@ class Command:
                     vals['file']= os.path.basename(vals['file'])
 
             elif btn=='save':
+                if self.already:
+                    app.msg_box(_('Choose existed file'), app.MB_OK)
+                    continue
                 save_to = app.dlg_file(False, '', app.app_path(app.APP_DIR_SETTINGS), 'Config|*.json')
                 if not save_to:     continue#while
                 self._save_menu_to_json(save_to)
                 app.file_open(save_to)
 
-            elif btn in ('edit', 'test', 'just'):
+            elif btn in ('edit', 'just'):
+#           elif btn in ('edit', 'test', 'just'):
                 cfg_path    = os.path.join(app.app_path(app.APP_DIR_SETTINGS), vals['file'])
                 if not os.path.isfile(cfg_path):
                     app.msg_box(_('Choose existed file'), app.MB_OK)
@@ -447,7 +487,8 @@ class Command:
                     s = re.sub(r'\[(\s*),', r'[\1 ', s)
                     s = re.sub(r',(\s*)\]', r' \1]', s)
                     json.loads(s)
-                    if btn=='test':
+                    if btn_m=='s/just':
+#                   if btn=='test':
                         app.msg_box(_('Correct JSON'), app.MB_OK)
                 except Exception as ex:
                     app.file_open(cfg_path)
@@ -457,7 +498,8 @@ class Command:
                         ed.set_caret(int(mtch.group(2))-1, int(mtch.group(1))-1)
                     app.msg_box(_('JSON error:')+'\n\n'+str(ex), app.MB_OK)
                     continue #while
-                if btn=='just':
+                if btn_m=='just':
+                    self.already    = True
                     config_menus(cfg_path)
                 
             elif btn=='help':

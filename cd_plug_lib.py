@@ -38,6 +38,7 @@ REDUCTS = {'lb'     :'label'
         ,  'lvw'    :'listview'
         ,  'ch-lvw' :'checklistview'
         ,  'tabs'   :'tabs'
+        ,  'clr'    :'colorpanel'
         }
 
 def f(s, *args, **kwargs):return s.format(*args, **kwargs)
@@ -290,9 +291,9 @@ ENV2FITS= {'win':
             ,'button'     :-4
             ,'combo_ro'   :-5
             ,'combo'      :-6
-            ,'checkbutton':-3
+            ,'checkbutton':-4
             ,'linklabel'  : 0
-            ,'spinedit'   :-5
+            ,'spinedit'   :-6
             }
           ,'mac':
             {'check'      :-1
