@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.1.01 2017-06-21'
+    '1.1.02 2017-06-23'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -182,7 +182,8 @@ def _reset_menu_hnt(mnu_list, prnt_id=None, _prnt_cap_path=''):
         elif tag.startswith('auto_config:'):
             # Autofilled plugin submenu
             cmd4plug= tag[len('auto_config:'):]
-            id_sub  = app.menu_proc(prnt_id, app.MENU_ADD, command=hnt, caption=cap)
+            id_sub  = app.menu_proc(prnt_id, app.MENU_ADD, caption=cap, tag=tag)
+            pass;              #log('cmd4plug, id_sub={}',(cmd4plug, id_sub))
             app.app_proc(           app.PROC_EXEC_PLUGIN, f('{},{}', cmd4plug, id_sub))
         elif hnt and hnt[0]=='_' and ':' in hnt:
             # Autofilled plugin submenu
