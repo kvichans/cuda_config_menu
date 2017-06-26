@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.1.02 2017-06-23'
+    '1.1.03 2017-06-26'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -14,6 +14,10 @@ from    .cd_plug_lib    import *
 
 MIN_API_VER = '1.0.172' # menu_proc() <== PROC_MENU_*
 MIN_API_VER = '1.0.185' # menu_proc() with hotkey,tag
+
+VERSION     = re.split('Version:', __doc__)[1].split("'")[1]
+VERSION_V,  \
+VERSION_D   = VERSION.split(' ')
 
 # Menu config
 PROC_MENU_TOP       = 'top'
@@ -85,6 +89,8 @@ def config_menus(mn_cfg_json=''):
             "cmd": <int command code>|<py-module,method>    (for cmd-item, ignored if "cap"=="-")
             "sub":[<config-item> ,<config-item> ...]        (for submenu, ignored if "cmd")
     '''
+    if app.app_api_version()<MIN_API_VER: return app.msg_status(_('Need update CudaText'))
+    
     pass;                       LOG and log('mn_cfg_json={}',mn_cfg_json)
     global last_file_cfg
     mn_cfg_json = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE) if not mn_cfg_json else mn_cfg_json
@@ -349,7 +355,7 @@ def _save_menu_to_json(save_to=None):
 
 class Command:
     def __init__(self):
-        self.already    = False
+        self.loaded    = False
         self.config_menus_on_focus  = apx.get_opt('config_menus_on_focus', False)
     
     def _save_menu_to_json(self, save_to=None):
@@ -361,16 +367,16 @@ class Command:
        #def _save_menu_to_json
         
     def on_start(self, ed_self):
-        if not apx.get_opt('config_menus_1st_done', False):
-            # Actions on first run
-            mn_cfg_src  = os.path.join(os.path.dirname(__file__)         , DEF_MENU_CFG_FILE)
-            mn_cfg_trg  = os.path.join(app.app_path(app.APP_DIR_SETTINGS), DEF_MENU_CFG_FILE)
-            pass;              #LOG and apx.log('mn_cfg_src, mn_cfg_trg={}',(mn_cfg_src, mn_cfg_trg))
-            if not os.path.exists(mn_cfg_trg):
-                shutil.copy(mn_cfg_src, mn_cfg_trg)
-            apx.set_opt('config_menus_1st_done', True)
-        if apx.get_opt('config_menus_on_start', True):
-            self.already    = True
+#       if not apx.get_opt('config_menus_1st_done', False):
+#           # Actions on first run
+#           mn_cfg_src  = os.path.join(os.path.dirname(__file__)         , DEF_MENU_CFG_FILE)
+#           mn_cfg_trg  = os.path.join(app.app_path(app.APP_DIR_SETTINGS), DEF_MENU_CFG_FILE)
+#           pass;              #LOG and apx.log('mn_cfg_src, mn_cfg_trg={}',(mn_cfg_src, mn_cfg_trg))
+#           if not os.path.exists(mn_cfg_trg):
+#               shutil.copy(mn_cfg_src, mn_cfg_trg)
+#           apx.set_opt('config_menus_1st_done', True)
+        if apx.get_opt('config_menus_on_start', False):
+            self.loaded    = True
             config_menus()
        #def on_start
 
@@ -382,12 +388,12 @@ class Command:
     def on_focus(self, ed_self):
         pass;                  #LOG and apx.log('')
         if self.config_menus_on_focus:
-            self.already    = True
+            self.loaded    = True
             config_menus()
        #def on_focus
 
     def config_menus(self):
-        self.already    = True
+        self.loaded    = True
         config_menus()
        #def config_menus
 
@@ -403,9 +409,11 @@ class Command:
 #      #def config_menus_help
 
     def dlg_config(self):
+        if app.app_api_version()<MIN_API_VER: return app.msg_status(_('Need update CudaText'))
+
         def rgb_to_int(r,g,b):    return r | (g<<8) | (b<<16)
         cfg_file    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
-        cfg_on_start= apx.get_opt('config_menus_on_start', True)
+        cfg_on_start= apx.get_opt('config_menus_on_start', False)
         cfg_on_focus= apx.get_opt('config_menus_on_focus', False)
         vals=dict(file=cfg_file
                  ,on_s='1' if cfg_on_start else '0'
@@ -413,11 +421,11 @@ class Command:
                  )
         while True:
             cnts=[
-                  dict(cid='save',tp='bt'   ,t=  5      ,l=5        ,w=350          ,cap=_('&Create config file...')    ,en=not self.already
+                  dict(cid='save',tp='bt'   ,t=  5      ,l=5        ,w=350          ,cap=_('&Create config file...')    ,en=not self.loaded
                                                                             ,hint=_('Save all current menus to file.'
                                                                                     '\rOnly for native CudaText menus.')+(
                                                                                   _('\rReload CudaText with '
-                                                                                    '\r   [ ] Apply on start') if self.already else '')     ) #  &c
+                                                                                    '\r   [ ] Apply on start') if self.loaded else '')     ) #  &c
                  ,dict(           tp='clr'  ,t= 40,l=0,w=1000,h=1           ,props=f('0,{},0,0',rgb_to_int(185,185,185))                    ) #
 
                  ,dict(           tp='lb'   ,tid='edit' ,l=5        ,w=350          ,cap=_('Confi&g file (default folder is "settings")')   ) #  &g
@@ -435,7 +443,7 @@ class Command:
                  ,dict(cid='!'   ,tp='bt'   ,t=170      ,l=5+350-160,w=80           ,cap=_('Save')  ,props='1'                              ) #     default
                  ,dict(cid='-'   ,tp='bt'   ,t=170      ,l=5+350-80 ,w=80           ,cap=_('Close')                                         ) #  
                  ]
-            btn, vals, chds = dlg_wrapper(_('Config menu'), 5+350+5, 5+190+5, cnts, vals, focus_cid='file')
+            btn, vals, chds = dlg_wrapper(f('{} ({})', _('Config menu'), VERSION_V), 5+350+5, 5+190+5, cnts, vals, focus_cid='file')
             if btn is None or btn=='-':    return
             scam    = app.app_proc(app.PROC_GET_KEYSTATE, '')
             btn_m   = scam + '/' + btn if scam and scam!='a' else btn   # smth == a/smth
@@ -450,7 +458,7 @@ class Command:
                 # Saves
                 if  apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE) !=  vals['file']:
                     apx.set_opt('config_menus_from',                        vals['file'])
-                if  apx.get_opt('config_menus_on_start', True)          != (vals['on_s']=='1'):
+                if  apx.get_opt('config_menus_on_start', False)         != (vals['on_s']=='1'):
                     apx.set_opt('config_menus_on_start',                    vals['on_s']=='1')
                 if  apx.get_opt('config_menus_on_focus', False)         != (vals['on_f']=='1'):
                     apx.set_opt('config_menus_on_focus',                    vals['on_f']=='1')
@@ -465,10 +473,11 @@ class Command:
                     vals['file']= os.path.basename(vals['file'])
 
             elif btn=='save':
-                if self.already:
+                if self.loaded:
                     app.msg_box(_('Choose existed file'), app.MB_OK)
                     continue
-                save_to = app.dlg_file(False, '', app.app_path(app.APP_DIR_SETTINGS), 'Config|*.json')
+                mn_trg  = os.path.join(app.app_path(app.APP_DIR_SETTINGS), DEF_MENU_CFG_FILE)
+                save_to = app.dlg_file(False, mn_trg, app.app_path(app.APP_DIR_SETTINGS), 'Config|*.json')
                 if not save_to:     continue#while
                 self._save_menu_to_json(save_to)
                 app.file_open(save_to)
@@ -500,7 +509,7 @@ class Command:
                     app.msg_box(_('JSON error:')+'\n\n'+str(ex), app.MB_OK)
                     continue #while
                 if btn_m=='just':
-                    self.already    = True
+                    self.loaded    = True
                     config_menus(cfg_path)
                 
             elif btn=='help':

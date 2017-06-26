@@ -1,3 +1,9 @@
+1.1.03 (2017-06-26)
+added: ver in dlg title
+added: control of min API ver
+fixed: pure start
+delete: autocreate settings\menu.json on pure start
+
 1.1.02 (2017-06-23)
 fixed: double macros/tools 
 
