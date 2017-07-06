@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.1.03 2017-06-26'
+    '1.1.04 2017-07-06'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -116,8 +116,8 @@ def config_menus(mn_cfg_json=''):
     if isinstance(mn_cfg, list):
         # New format
         _reset_menu_hnt(mn_cfg)
-        print(         _('OK config menus from "{}"').format(mn_cfg_json))
-        app.msg_status(_('OK config menus from "{}"').format(mn_cfg_json))
+        print(         _('OK config menus from "{}" ({})').format(mn_cfg_json, VERSION_V))
+        app.msg_status(_('OK config menus from "{}" ({})').format(mn_cfg_json, VERSION_V))
     else:
         # Old format
         pass;                   #LOG and apx.log('mn_cfg={}',pfrm15(mn_cfg))
