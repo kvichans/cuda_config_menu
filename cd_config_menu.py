@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.1.04 2017-07-06'
+    '1.1.05 2018-02-05'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -94,7 +94,7 @@ def config_menus(mn_cfg_json=''):
     pass;                       LOG and log('mn_cfg_json={}',mn_cfg_json)
     global last_file_cfg
     mn_cfg_json = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE) if not mn_cfg_json else mn_cfg_json
-    pass;                       #LOG and apx.log('mn_cfg_json={}',mn_cfg_json)
+    pass;                       LOG and apx.log('mn_cfg_json={}',mn_cfg_json)
     if not mn_cfg_json:    
         return app.msg_status(_('No menu config file "{}"').format(mn_cfg_json))
     mn_cfg_json = os.path.join(app.app_path(app.APP_DIR_SETTINGS), mn_cfg_json)
@@ -150,6 +150,7 @@ SPEC_IDS= { 'recents':'_recents',  'langs':'_langs',  'enc':'_enc',  'lexers':'_
           ,'_recents':'_recents', '_langs':'_langs', '_enc':'_enc', '_lexers':'_lexers'
           ,  'plugins':'_plugins'
           , '_plugins':'_plugins'
+          , '_oplugins':'_oplugins'
           , '_themes-ui':'_themes-ui'
           , '_themes-syntax':'_themes-syntax'
           }
@@ -174,7 +175,7 @@ def _reset_menu_hnt(mnu_list, prnt_id=None, _prnt_cap_path=''):
         tag     = mnu_dict.get('tag'    ,'')
         hnt     = mnu_dict.get('hint'   ,'')
         cmd_s   = mnu_dict.get('cmd'    ,'')
-        pass;                  #LOG and log('cap,hnt,cmd_s={}',(cap,hnt,cmd_s))
+        pass;                   LOG and log('cap,hnt,cmd_s={}',(cap,hnt,cmd_s))
         if False:pass
         elif ''==cap:
             pass;               LOG and log('Error "no cap": _prnt_cap_path={} mnu_dict={}',_prnt_cap_path,mnu_dict)
@@ -184,7 +185,10 @@ def _reset_menu_hnt(mnu_list, prnt_id=None, _prnt_cap_path=''):
             app.menu_proc(          prnt_id, app.MENU_ADD, caption=cap)
         elif hnt in SPEC_IDS:
             # Autofilled core submenu
+            pass;               LOG and log('>> prnt_id={}',prnt_id)
+            pass;               LOG and log('?? use SPEC_IDS command={}',(SPEC_IDS[hnt]))
             app.menu_proc(          prnt_id, app.MENU_ADD, command=SPEC_IDS[hnt], caption=cap)
+            pass;               LOG and log('ok use SPEC_IDS',())
         elif tag.startswith('auto_config:'):
             # Autofilled plugin submenu
             cmd4plug= tag[len('auto_config:'):]
@@ -375,9 +379,12 @@ class Command:
 #           if not os.path.exists(mn_cfg_trg):
 #               shutil.copy(mn_cfg_src, mn_cfg_trg)
 #           apx.set_opt('config_menus_1st_done', True)
+        pass;                  #LOG and log('??',())
         if apx.get_opt('config_menus_on_start', False):
             self.loaded    = True
             config_menus()
+            pass;               top_its = app.menu_proc(    'top', app.MENU_ENUM)
+            pass;              #log('top_its={}',top_its)
        #def on_start
 
 #   def on_open(self, ed_self):
