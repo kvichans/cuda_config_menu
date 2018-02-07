@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.1.05 2018-02-05'
+    '1.1.06 2018-02-07'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -93,10 +93,15 @@ def config_menus(mn_cfg_json=''):
     
     pass;                       LOG and log('mn_cfg_json={}',mn_cfg_json)
     global last_file_cfg
-    mn_cfg_json = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE) if not mn_cfg_json else mn_cfg_json
+    config_menus_on_focus  = apx.get_opt('config_menus_on_focus', False, apx.CONFIG_LEV_USER)
+    mn_cfg_json = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE, apx.CONFIG_LEV_USER) \
+                    if not config_menus_on_focus else \
+                  apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE) \
+                    if not mn_cfg_json else \
+                  mn_cfg_json
     pass;                       LOG and apx.log('mn_cfg_json={}',mn_cfg_json)
     if not mn_cfg_json:    
-        return app.msg_status(_('No menu config file "{}"').format(mn_cfg_json))
+        return app.msg_status(_('No menu config file'))
     mn_cfg_json = os.path.join(app.app_path(app.APP_DIR_SETTINGS), mn_cfg_json)
     if not os.path.exists(mn_cfg_json):
         last_file_cfg   = ('', 0)
@@ -419,7 +424,7 @@ class Command:
         if app.app_api_version()<MIN_API_VER: return app.msg_status(_('Need update CudaText'))
 
         def rgb_to_int(r,g,b):    return r | (g<<8) | (b<<16)
-        cfg_file    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
+        cfg_file    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE, apx.CONFIG_LEV_USER)
         cfg_on_start= apx.get_opt('config_menus_on_start', False)
         cfg_on_focus= apx.get_opt('config_menus_on_focus', False)
         vals=dict(file=cfg_file
@@ -428,11 +433,13 @@ class Command:
                  )
         while True:
             cnts=[
-                  dict(cid='save',tp='bt'   ,t=  5      ,l=5        ,w=350          ,cap=_('&Create config file...')    ,en=not self.loaded
+#                 dict(cid='save',tp='bt'   ,t=  5      ,l=5        ,w=350          ,cap=_('&Create config file...')    ,en=not self.loaded
+                  dict(cid='save',tp='bt'   ,t=  5      ,l=5        ,w=350          ,cap=_('&Create config file with native menu...')
                                                                             ,hint=_('Save all current menus to file.'
                                                                                     '\rOnly for native CudaText menus.')+(
                                                                                   _('\rReload CudaText with '
-                                                                                    '\r   [ ] Apply on start') if self.loaded else '')     ) #  &c
+                                                                                    '\r   [ ] Apply on start'))                             ) #  &c
+#                                                                                   '\r   [ ] Apply on start')               if self.loaded else '')     ) #  &c
                  ,dict(           tp='clr'  ,t= 40,l=0,w=1000,h=1           ,props=f('0,{},0,0',rgb_to_int(185,185,185))                    ) #
 
                  ,dict(           tp='lb'   ,tid='edit' ,l=5        ,w=350          ,cap=_('Confi&g file (default folder is "settings")')   ) #  &g
@@ -463,7 +470,8 @@ class Command:
                     app.msg_box(_('Choose existed file'), app.MB_OK)
                     continue #while
                 # Saves
-                if  apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE) !=  vals['file']:
+                if  apx.get_opt('config_menus_from'
+                               ,DEF_MENU_CFG_FILE, apx.CONFIG_LEV_USER) !=  vals['file']:
                     apx.set_opt('config_menus_from',                        vals['file'])
                 if  apx.get_opt('config_menus_on_start', False)         != (vals['on_s']=='1'):
                     apx.set_opt('config_menus_on_start',                    vals['on_s']=='1')
@@ -480,6 +488,12 @@ class Command:
                     vals['file']= os.path.basename(vals['file'])
 
             elif btn=='save':
+                if self.loaded:
+                    app.msg_box(_('You cannot create menu config now, '+
+                                  'because custom menu is already loaded. '+
+                                  'To enable creation of menu config, '+
+                                  'uncheck the "Apply on start" and restart CudaText.'), app.MB_OK)
+                    continue
                 if self.loaded:
                     app.msg_box(_('Choose existed file'), app.MB_OK)
                     continue
