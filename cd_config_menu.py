@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.1.06 2018-02-07'
+    '1.1.06 2018-02-08'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -94,15 +94,18 @@ def config_menus(mn_cfg_json=''):
     pass;                       LOG and log('mn_cfg_json={}',mn_cfg_json)
     global last_file_cfg
     config_menus_on_focus  = apx.get_opt('config_menus_on_focus', False, apx.CONFIG_LEV_USER)
-    mn_cfg_json = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE, apx.CONFIG_LEV_USER) \
+    mn_cfg_json = mn_cfg_json \
+                    if mn_cfg_json else \
+                  apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE, apx.CONFIG_LEV_USER) \
                     if not config_menus_on_focus else \
-                  apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE) \
-                    if not mn_cfg_json else \
-                  mn_cfg_json
+                  apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
+                  
     pass;                       LOG and apx.log('mn_cfg_json={}',mn_cfg_json)
     if not mn_cfg_json:    
         return app.msg_status(_('No menu config file'))
-    mn_cfg_json = os.path.join(app.app_path(app.APP_DIR_SETTINGS), mn_cfg_json)
+    mn_cfg_json = mn_cfg_json \
+                    if os.path.exists(mn_cfg_json) else \
+                  os.path.join(app.app_path(app.APP_DIR_SETTINGS), mn_cfg_json)
     if not os.path.exists(mn_cfg_json):
         last_file_cfg   = ('', 0)
         return app.msg_status(_('No menu config file "{}"').format(mn_cfg_json))
@@ -121,8 +124,8 @@ def config_menus(mn_cfg_json=''):
     if isinstance(mn_cfg, list):
         # New format
         _reset_menu_hnt(mn_cfg)
-        print(         _('OK config menus from "{}" ({})').format(mn_cfg_json, VERSION_V))
-        app.msg_status(_('OK config menus from "{}" ({})').format(mn_cfg_json, VERSION_V))
+        print(         _('Loading menus "{}" ({})').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS)+os.sep, ''), VERSION_V))
+        app.msg_status(_('Loading menus "{}" ({})').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS)+os.sep, ''), VERSION_V))
     else:
         # Old format
         pass;                   #LOG and apx.log('mn_cfg={}',pfrm15(mn_cfg))
@@ -142,8 +145,8 @@ def config_menus(mn_cfg_json=''):
             if mn_pre.get('how', 'add') == 'clear':
                 app.menu_proc(  mn_pre_id, app.MENU_CLEAR)
             _reset_menu_old(    mn_pre_id, mn_pre.get('sub', []))
-        print(         _('OK config menus from "{}"').format(mn_cfg_json))
-        app.msg_status(_('OK config menus from "{}"').format(mn_cfg_json))
+        print(         _('Loading menus "{}"').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS), '')))
+        app.msg_status(_('Loading menus "{}"').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS), '')))
    #def config_menus
 
 C1      = chr(1)
@@ -347,7 +350,7 @@ def _save_menu_to_json(save_to=None):
 #   mnu     = scan_menu_tree(top_id)
     mnu     = scan_menu_tree()
     pass;                  #LOG and log('mnu={}',mnu)
-    jstx    = json.dumps(mnu, indent=2)
+    jstx    = json.dumps(mnu, indent=2, ensure_ascii=False)
     jstx    = re.sub(r'{\s*"'       ,r'{"'      ,jstx)
     jstx    = re.sub(r'(\d)\s+}'    ,r'\1}'     ,jstx)
     jstx    = re.sub(r'"\s*}'       ,r'"}'      ,jstx)
@@ -356,15 +359,16 @@ def _save_menu_to_json(save_to=None):
     jstx    = re.sub(r'\]\s*}'      ,r']}'      ,jstx)
     jstx    = re.sub(r'\},(\s+) {'  ,r'}\1,{'   ,jstx)
     jstx    = jstx.replace('  ]}', ']}')
+    pass;                      #log('jstx={}',(jstx[0:200]))
     if not save_to:
         save_to = app.dlg_file(False, '', '', 'Config|*.json')
         if not save_to: return # app.msg_box(jstx, app.MB_OK)
-    open(save_to, 'w').write(jstx)
+    open(save_to, 'w', encoding='UTF-8').write(jstx)
    #def _save_menu_to_json
 
 class Command:
     def __init__(self):
-        self.loaded    = False
+        self.loaded         = False
         self.config_menus_on_focus  = apx.get_opt('config_menus_on_focus', False)
     
     def _save_menu_to_json(self, save_to=None):
@@ -384,6 +388,7 @@ class Command:
 #           if not os.path.exists(mn_cfg_trg):
 #               shutil.copy(mn_cfg_src, mn_cfg_trg)
 #           apx.set_opt('config_menus_1st_done', True)
+#       pass;                   log('ed_self={}',(ed_self.get_filename()))
         pass;                  #LOG and log('??',())
         if apx.get_opt('config_menus_on_start', False):
             self.loaded    = True
@@ -398,6 +403,7 @@ class Command:
 #      #def on_open
 
     def on_focus(self, ed_self):
+#       pass;                   log('ed_self={}',(ed_self.get_filename()))
         pass;                  #LOG and apx.log('')
         if self.config_menus_on_focus:
             self.loaded    = True
@@ -465,14 +471,20 @@ class Command:
             if False:pass
             elif btn=='!':
                 # Checks
-                cfg_path    = os.path.join(app.app_path(app.APP_DIR_SETTINGS), vals['file'])
+                cfg_path    = vals['file'] \
+                                if os.path.exists(vals['file']) else \
+                              os.path.join(app.app_path(app.APP_DIR_SETTINGS), vals['file'])
+#               cfg_path    = os.path.join(app.app_path(app.APP_DIR_SETTINGS), vals['file'])
                 if (vals['on_s']=='1' or vals['on_f']=='1') and not os.path.isfile(cfg_path):
                     app.msg_box(_('Choose existed file'), app.MB_OK)
                     continue #while
                 # Saves
+#               if  apx.get_opt('config_menus_from'
+#                              ,DEF_MENU_CFG_FILE, apx.CONFIG_LEV_USER) !=  vals['file']:
+#                   apx.set_opt('config_menus_from',                        vals['file'])
                 if  apx.get_opt('config_menus_from'
-                               ,DEF_MENU_CFG_FILE, apx.CONFIG_LEV_USER) !=  vals['file']:
-                    apx.set_opt('config_menus_from',                        vals['file'])
+                               ,DEF_MENU_CFG_FILE, apx.CONFIG_LEV_USER) !=  cfg_path:
+                    apx.set_opt('config_menus_from',                        cfg_path.replace(app.app_path(app.APP_DIR_SETTINGS)+os.sep, '').replace('\\', '\\\\'))
                 if  apx.get_opt('config_menus_on_start', False)         != (vals['on_s']=='1'):
                     apx.set_opt('config_menus_on_start',                    vals['on_s']=='1')
                 if  apx.get_opt('config_menus_on_focus', False)         != (vals['on_f']=='1'):
@@ -505,7 +517,9 @@ class Command:
 
             elif btn in ('edit', 'just'):
 #           elif btn in ('edit', 'test', 'just'):
-                cfg_path    = os.path.join(app.app_path(app.APP_DIR_SETTINGS), vals['file'])
+                cfg_path    = vals['file'] \
+                                if os.path.exists(vals['file']) else \
+                              os.path.join(app.app_path(app.APP_DIR_SETTINGS), vals['file'])
                 if not os.path.isfile(cfg_path):
                     app.msg_box(_('Choose existed file'), app.MB_OK)
                     continue #while

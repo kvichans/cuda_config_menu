@@ -1,5 +1,7 @@
 1.1.06 (2018-02-07)
 fixed: Show in dlg only main config file (not for lexer)
+fixed: Allow set file not in settings folder
+fixed: Allow save native menu after GUI translation
 
 1.1.05 (2018-02-05)
 added: support for submenu "Settings - plugins"
