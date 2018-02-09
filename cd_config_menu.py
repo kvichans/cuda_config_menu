@@ -124,8 +124,8 @@ def config_menus(mn_cfg_json=''):
     if isinstance(mn_cfg, list):
         # New format
         _reset_menu_hnt(mn_cfg)
-        print(         _('Loading menus "{}" ({})').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS)+os.sep, ''), VERSION_V))
-        app.msg_status(_('Loading menus "{}" ({})').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS)+os.sep, ''), VERSION_V))
+        print(         _('Loading menus: {} ({})').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS)+os.sep, ''), VERSION_V))
+        app.msg_status(_('Loading menus: {} ({})').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS)+os.sep, ''), VERSION_V))
     else:
         # Old format
         pass;                   #LOG and apx.log('mn_cfg={}',pfrm15(mn_cfg))
@@ -145,8 +145,8 @@ def config_menus(mn_cfg_json=''):
             if mn_pre.get('how', 'add') == 'clear':
                 app.menu_proc(  mn_pre_id, app.MENU_CLEAR)
             _reset_menu_old(    mn_pre_id, mn_pre.get('sub', []))
-        print(         _('Loading menus "{}"').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS), '')))
-        app.msg_status(_('Loading menus "{}"').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS), '')))
+        print(         _('Loading menus: {}').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS), '')))
+        app.msg_status(_('Loading menus: {}').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS), '')))
    #def config_menus
 
 C1      = chr(1)
@@ -391,28 +391,31 @@ class Command:
 #       pass;                   log('ed_self={}',(ed_self.get_filename()))
         pass;                  #LOG and log('??',())
         if apx.get_opt('config_menus_on_start', False):
-            self.loaded    = True
             config_menus()
+            self.loaded    = True
             pass;               top_its = app.menu_proc(    'top', app.MENU_ENUM)
             pass;              #log('top_its={}',top_its)
        #def on_start
-
-#   def on_open(self, ed_self):
-#       pass;                  #LOG and apx.log('')
-#       config_menus()
-#      #def on_open
 
     def on_focus(self, ed_self):
 #       pass;                   log('ed_self={}',(ed_self.get_filename()))
         pass;                  #LOG and apx.log('')
         if self.config_menus_on_focus:
-            self.loaded    = True
             config_menus()
+            self.loaded    = True
        #def on_focus
 
+    def on_open(self, ed_self):
+#       pass;                   log('ed_self={}',(ed_self.get_filename()))
+        pass;                  #LOG and apx.log('')
+        if self.config_menus_on_focus:
+            config_menus()
+            self.loaded    = True
+       #def on_open
+
     def config_menus(self):
-        self.loaded    = True
         config_menus()
+        self.loaded    = True
        #def config_menus
 
 #   def config_menus_open(self):
