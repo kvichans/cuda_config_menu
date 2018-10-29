@@ -1,4 +1,7 @@
-1.1.06 (2018-02-07)
+1.1.08 (2018-10-27)
+fixed: start app
+
+1.1.06 (2018-02-08)
 fixed: Show in dlg only main config file (not for lexer)
 fixed: Allow set file not in settings folder
 fixed: Allow save native menu after GUI translation
