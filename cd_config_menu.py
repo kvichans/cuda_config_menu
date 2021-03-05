@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.1.09 2018-10-29'
+    '1.1.10 2021-03-03'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -454,31 +454,33 @@ class Command:
                  ,on_s='1' if cfg_on_start else '0'
                  ,on_f='1' if cfg_on_focus else '0'
                  )
+        dlg_w = 400   # dialog_width: original value = 350
+        btn_w = 80    # button_width
         while True:
             cnts=[
-                  dict(cid='save',tp='bt'   ,t=  5      ,l=5        ,w=350          ,cap=_('&Create config file with native menu...')
-                                                                            ,hint=_('Save current menus (main and text) to file.'
-                                                                                    '\rOnly for native CudaText menus.')+(
-                                                                                  _('\rReload CudaText with '
-                                                                                    '\r   [ ] Apply on start'))                             ) #  &c
-                 ,dict(           tp='clr'  ,t= 40,l=0,w=1000,h=1           ,props=f('0,{},0,0',rgb_to_int(185,185,185))                    ) #
+                  dict(cid='save',tp='bt'   ,t=  5      ,l=5              ,w=dlg_w        ,cap=_('&Create config file with native menu...')
+                                                                                  ,hint=_('Save current menus (main and text) to file.'
+                                                                                          '\rOnly for native CudaText menus.')+(
+                                                                                        _('\rReload CudaText with '
+                                                                                          '\r   [ ] Apply on start'))                              ) #  &c
+                 ,dict(           tp='clr'  ,t= 40,l=0,w=1000,h=1                 ,props=f('0,{},0,0',rgb_to_int(185,185,185))                    ) #
 
-                 ,dict(           tp='lb'   ,tid='edit' ,l=5        ,w=350          ,cap=_('Confi&g file (default folder is "settings")')   ) #  &g
-                 ,dict(cid='edit',tp='bt'   ,t= 50      ,l=5+350-80 ,w=80           ,cap=_('&Edit')                                         ) #  &o
-                 ,dict(cid='file',tp='ed'   ,t= 75      ,l=5        ,w=350-80                                                               ) #  
-                 ,dict(cid='brow',tp='bt'   ,tid='file' ,l=5+350-80 ,w=80           ,cap=_('Browse&...')                                    ) #  &.
-                 ,dict(cid='on_s',tp='ch'   ,t=110      ,l=5        ,w=100          ,cap=_('Apply on &start')
-                                                                            ,hint=_('Apply menu once on CudaText start')                    ) #  &s
-                 ,dict(cid='on_f',tp='ch'   ,t=135      ,l=5        ,w=100          ,cap=_('Apply on &focus')
-                                                                            ,hint=_("Apply menu (common or lexer specific) when file tab gets focus")) #  &f
-                 ,dict(cid='just',tp='bt'   ,tid='on_s' ,l=5+120    ,w=150          ,cap=_('&Apply now')
-                                                                            ,hint=_('Apply menu file now.'
-                                                                                    '\rShift+Click - perform syntax checking of JSON file.')) #  &a
-                 ,dict(cid='help',tp='bt'   ,t=170      ,l=5        ,w=80           ,cap=_('&Help...')                                      ) #  &h
-                 ,dict(cid='!'   ,tp='bt'   ,t=170      ,l=5+350-160,w=80           ,cap=_('Save')  ,props='1'                              ) #     default
-                 ,dict(cid='-'   ,tp='bt'   ,t=170      ,l=5+350-80 ,w=80           ,cap=_('Close')                                         ) #  
+                 ,dict(           tp='lb'   ,tid='edit' ,l=5              ,w=dlg_w        ,cap=_('Confi&g file (default folder is "settings")')   ) #  &g
+                 ,dict(cid='edit',tp='bt'   ,t= 50      ,l=5+dlg_w-btn_w  ,w=btn_w        ,cap=_('&Edit')                                         ) #  &o
+                 ,dict(cid='file',tp='ed'   ,t= 75      ,l=5              ,w=dlg_w-btn_w                                                          ) #  
+                 ,dict(cid='brow',tp='bt'   ,tid='file' ,l=5+dlg_w-btn_w  ,w=btn_w        ,cap=_('Browse&...')                                    ) #  &.
+                 ,dict(cid='on_s',tp='ch'   ,t=110      ,l=5              ,w=100          ,cap=_('Apply on &start')
+                                                                                  ,hint=_('Apply menu once on CudaText start')                    ) #  &s
+                 ,dict(cid='on_f',tp='ch'   ,t=135      ,l=5              ,w=100          ,cap=_('Apply on &focus')
+                                                                              ,hint=_("Apply menu (common or lexer specific) when file tab gets focus")) #  &f
+                 ,dict(cid='just',tp='bt'   ,tid='on_s' ,l=5+dlg_w-btn_w-150    ,w=150          ,cap=_('&Apply now')
+                                                                              ,hint=_('Apply menu file now.'
+                                                                                      '\rShift+Click - perform syntax checking of JSON file.')) #  &a
+                 ,dict(cid='help',tp='bt'   ,t=170      ,l=5              ,w=btn_w        ,cap=_('&Help...')                                      ) #  &h
+                 ,dict(cid='!'   ,tp='bt'   ,t=170      ,l=5+dlg_w-btn_w*2,w=btn_w        ,cap=_('Save')  ,props='1'                              ) #     default
+                 ,dict(cid='-'   ,tp='bt'   ,t=170      ,l=5+dlg_w-btn_w  ,w=btn_w        ,cap=_('Close')                                         ) #  
                  ]
-            btn, vals, chds = dlg_wrapper(f('{} ({})', _('Config Menu'), VERSION_V), 5+350+5, 5+190+5, cnts, vals, focus_cid='file')
+            btn, vals, chds = dlg_wrapper(f('{} ({})', _('Config Menu'), VERSION_V), 5+dlg_w+5, 5+190+5, cnts, vals, focus_cid='file')
             if btn is None or btn=='-':    return
             scam    = app.app_proc(app.PROC_GET_KEYSTATE, '')
             btn_m   = scam + '/' + btn if scam and scam!='a' else btn   # smth == a/smth
@@ -595,9 +597,10 @@ Tips
 2. Item {"cap":"", "hint":"top", "sub": []} hides main menu. 
   It's correct state. 
 ''')
-                dlg_wrapper(_('Help for "Config menu"'), GAP*2+640, GAP*3+25+550,
-                     [dict(cid='htx',tp='me'    ,t=GAP  ,h=550  ,l=GAP          ,w=640  ,props='1,1,1' ) #  ro,mono,border
-                     ,dict(cid='-'  ,tp='bt'    ,t=GAP+550+GAP  ,l=GAP+640-90   ,w=90   ,cap='&Close'  )
+                hlp_w = 680  # help_width; original = 640
+                dlg_wrapper(_('Help - Config Menu'), GAP*2+hlp_w, GAP*3+25+550,
+                     [dict(cid='htx',tp='me'    ,t=GAP  ,h=550  ,l=GAP          ,w=hlp_w  ,props='1,1,1' ) #  ro,mono,border
+                     ,dict(cid='-'  ,tp='bt'    ,t=GAP+550+GAP  ,l=GAP+hlp_w-90 ,w=90     ,cap=_('&Close')  )
                      ], dict(htx=HELP_BODY), focus_cid='htx')
            #while true
 
