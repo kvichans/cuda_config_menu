@@ -1,3 +1,6 @@
+1.1.10 (2021-03-03)
+fixed: i18n
+
 1.1.09 (2018-10-29)
 fixed: hints and names in dialog
 
