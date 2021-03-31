@@ -126,7 +126,7 @@ def _config_menus(mn_cfg_json='', contex=''):
     if isinstance(mn_cfg, list):
         # New format
         _reset_menu_hnt(mn_cfg)
-        print(         _('Loading menus: {} ({}{})').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS)+os.sep, ''), VERSION_V, contex))
+#       print(         _('Loading menus: {} ({}{})').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS)+os.sep, ''), VERSION_V, contex))
         app.msg_status(_('Loading menus: {}'       ).format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS)+os.sep, ''), VERSION_V))
     else:
         # Old format
@@ -148,7 +148,7 @@ def _config_menus(mn_cfg_json='', contex=''):
             if mn_pre.get('how', 'add') == 'clear':
                 app.menu_proc(  mn_pre_id, app.MENU_CLEAR)
             _reset_menu_old(    mn_pre_id, mn_pre.get('sub', []))
-        print(         _('Loading menus: {}').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS), '')))
+#       print(         _('Loading menus: {}').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS), '')))
         app.msg_status(_('Loading menus: {}').format(mn_cfg_json.replace(app.app_path(app.APP_DIR_SETTINGS), '')))
    #def _config_menus
 
@@ -477,7 +477,7 @@ class Command:
                                                                               ,hint=_('Apply menu file now.'
                                                                                       '\rShift+Click - perform syntax checking of JSON file.')) #  &a
                  ,dict(cid='help',tp='bt'   ,t=170      ,l=5              ,w=btn_w        ,cap=_('&Help...')                                      ) #  &h
-                 ,dict(cid='!'   ,tp='bt'   ,t=170      ,l=5+dlg_w-btn_w*2,w=btn_w        ,cap=_('Save')  ,props='1'                              ) #     default
+                 ,dict(cid='!'   ,tp='bt'   ,t=170      ,l=5+dlg_w-btn_w*2,w=btn_w        ,cap=_('Save')  ,ex0='1'                                ) #     default
                  ,dict(cid='-'   ,tp='bt'   ,t=170      ,l=5+dlg_w-btn_w  ,w=btn_w        ,cap=_('Close')                                         ) #  
                  ]
             btn, vals, chds = dlg_wrapper(f('{} ({})', _('Config Menu'), VERSION_V), 5+dlg_w+5, 5+190+5, cnts, vals, focus_cid='file')
@@ -599,7 +599,7 @@ Tips
 ''')
                 hlp_w = 680  # help_width; original = 640
                 dlg_wrapper(_('Help - Config Menu'), GAP*2+hlp_w, GAP*3+25+550,
-                     [dict(cid='htx',tp='me'    ,t=GAP  ,h=550  ,l=GAP          ,w=hlp_w  ,props='1,1,1' ) #  ro,mono,border
+                     [dict(cid='htx',tp='me'    ,t=GAP  ,h=550  ,l=GAP          ,w=hlp_w  ,ex0='1', ex1='1', ex2='1' ) #  ro,mono,border
                      ,dict(cid='-'  ,tp='bt'    ,t=GAP+550+GAP  ,l=GAP+hlp_w-90 ,w=90     ,cap=_('&Close')  )
                      ], dict(htx=HELP_BODY), focus_cid='htx')
            #while true
