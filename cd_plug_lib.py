@@ -560,7 +560,7 @@ def get_hotkeys_desc(cmd_id, ext_id=None, keys_js=None, def_ans=''):
     """
     if keys_js is None:
         keys_json   = app.app_path(app.APP_DIR_SETTINGS)+os.sep+'keys.json'
-        keys_js     = apx._json_loads(open(keys_json).read()) if os.path.exists(keys_json) else {}
+        keys_js     = apx._json_loads(open(keys_json, encoding='utf-8').read()) if os.path.exists(keys_json) else {}
 
     cmd_id  = f('{},{}', cmd_id, ext_id) if ext_id else cmd_id
     if cmd_id not in keys_js:
