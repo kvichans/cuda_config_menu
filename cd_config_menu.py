@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.1.10 2021-03-03'
+    '1.1.11 2022-10-15'
 '''
 
 import  os, shutil, webbrowser, json, collections, re

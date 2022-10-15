@@ -1,3 +1,7 @@
+
+1.1.11 (2022-10-15)
+fixed: must force UTF-8 encoding on file opening
+
 1.1.10 (2021-03-03)
 fixed: i18n
 
