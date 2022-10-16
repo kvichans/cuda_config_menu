@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.1.10 2021-03-03'
+    '1.1.11 2022-10-15'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -122,7 +122,7 @@ def _config_menus(mn_cfg_json='', contex=''):
         return
     last_file_cfg   =    curr_file_cfg
 
-    mn_cfg      = apx._json_loads(open(mn_cfg_json).read())
+    mn_cfg      = apx._json_loads(open(mn_cfg_json, encoding='utf-8').read())
     if isinstance(mn_cfg, list):
         # New format
         _reset_menu_hnt(mn_cfg)
@@ -539,7 +539,7 @@ class Command:
                 if btn=='edit':
                     app.file_open(cfg_path)
                 try:
-                    s = open(cfg_path).read()
+                    s = open(cfg_path, encoding='utf-8').read()
                     s = re.sub(r'{(\s*),' , r'{\1 ', s)
                     s = re.sub(r',(\s*)}' , r' \1}', s)
                     s = re.sub(r'\[(\s*),', r'[\1 ', s)
