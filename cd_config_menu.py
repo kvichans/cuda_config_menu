@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.1.11 2022-10-15'
+    '1.1.12 2023-12-22'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -285,9 +285,9 @@ def _save_menu_to_json(save_to=None):
             pass;               LOG8 and log('nmu_it={}',nmu_it)
             nmn = nmu_it['cap']
             cmd = nmu_it['cmd']
-            hnt = nmu_it['hint']
             mid = nmu_it['id']
-            tag = nmu_it['tag']
+            hnt = nmu_it.get('hint', '')
+            tag = nmu_it.get('tag', '')
             pass;               LOG8 and log('nmn,cmd,hnt,mid,tag={}',(nmn,cmd,hnt,mid.tag))
 
             if nmn=='-':
