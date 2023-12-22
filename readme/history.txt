@@ -1,3 +1,5 @@
+1.1.12 (2023-12-22)
+fixed: adapted to change in menu_proc API
 
 1.1.11 (2022-10-15)
 fixed: must force UTF-8 encoding on file opening
