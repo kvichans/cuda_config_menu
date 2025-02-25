@@ -480,7 +480,7 @@ class Command:
                  ,dict(cid='!'   ,tp='bt'   ,t=170      ,l=5+dlg_w-btn_w*2,w=btn_w        ,cap=_('Save')  ,ex0='1'                                ) #     default
                  ,dict(cid='-'   ,tp='bt'   ,t=170      ,l=5+dlg_w-btn_w  ,w=btn_w        ,cap=_('Close')                                         ) #  
                  ]
-            btn, vals, chds = dlg_wrapper(f('{} ({})', _('Config Menu'), VERSION_V), 5+dlg_w+5, 5+190+5, cnts, vals, focus_cid='file')
+            btn, vals, chds = dlg_wrapper(f('{} ({})', _('Configure Menu'), VERSION_V), 5+dlg_w+5, 5+190+5, cnts, vals, focus_cid='file')
             if btn is None or btn=='-':    return
             scam    = app.app_proc(app.PROC_GET_KEYSTATE, '')
             btn_m   = scam + '/' + btn if scam and scam!='a' else btn   # smth == a/smth
@@ -598,7 +598,7 @@ Tips
   It's correct state. 
 ''')
                 hlp_w = 680  # help_width; original = 640
-                dlg_wrapper(_('Help - Config Menu'), GAP*2+hlp_w, GAP*3+25+550,
+                dlg_wrapper(_('Help - Configure Menu'), GAP*2+hlp_w, GAP*3+25+550,
                      [dict(cid='htx',tp='me'    ,t=GAP  ,h=550  ,l=GAP          ,w=hlp_w  ,ex0='1', ex1='1', ex2='1' ) #  ro,mono,border
                      ,dict(cid='-'  ,tp='bt'    ,t=GAP+550+GAP  ,l=GAP+hlp_w-90 ,w=90     ,cap=_('&Close')  )
                      ], dict(htx=HELP_BODY), focus_cid='htx')
@@ -618,7 +618,7 @@ Tips
 #       at_b4c      = top_plus_for_os('button', 'check')
 #       while True:
 #           DLG_W, DLG_H= GAP+300+GAP, GAP+160+GAP
-#           ans = app.dlg_custom('Settings for "Config menu"'   ,DLG_W, DLG_H, '\n'.join([]
+#           ans = app.dlg_custom('Settings for "Configure Menu"'   ,DLG_W, DLG_H, '\n'.join([]
 #           +[C1.join(['type=label'     ,POS_FMT(l=GAP,             t=GAP,              r=DLG_W,b=0)
 #                     ,'cap='+_('&Config file (default folder is "settings")')
 #                     ])] # i= 0
@@ -713,7 +713,7 @@ Tips
 #       cfg_file    = apx.get_opt('config_menus_from', DEF_MENU_CFG_FILE)
 #       cfg_on_start= apx.get_opt('config_menus_on_start', True)
 #       cfg_on_focus= apx.get_opt('config_menus_on_focus', False)
-#       anses       = app.dlg_input_ex(3, "Settings for 'Config menu'"
+#       anses       = app.dlg_input_ex(3, "Settings for 'Configure Menu'"
 #                       , _('&Config file (default folder is "settings")'), cfg_file
 #                       , _('On &start'), 'Y' if cfg_on_start else 'N'
 #                       , _('On &focus'), 'Y' if cfg_on_focus else 'N'
