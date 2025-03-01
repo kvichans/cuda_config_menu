@@ -59,4 +59,4 @@ added: dlg Settings
 added: on_focus, on_start 
 
 0.8.0 (2015-11-18)
-init
+initial version
