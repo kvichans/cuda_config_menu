@@ -217,8 +217,8 @@ def _reset_menu_hnt(mnu_list, prnt_id=None, _prnt_cap_path=''):
             # Plugin Cmd!
             app.menu_proc(          prnt_id, app.MENU_ADD, command=cmd_s, caption=cap)
         elif cmd_s:
-            # support two View disabled menu items
-            if cap.startswith('--') and cap.endswith('--'):
+            # Support two View disabled menu items
+            if (cmd_s=='0') and cap.startswith('--') and cap.endswith('--'):
                 temp_id = app.menu_proc(prnt_id, app.MENU_ADD, command=0, caption=cap)
                 app.menu_proc(temp_id, app.MENU_SET_ENABLED, command=False)
                 continue
