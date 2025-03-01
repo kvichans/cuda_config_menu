@@ -1,3 +1,6 @@
+1.1.13 (2025-03-01)
+fixed: two disabled menu items in 'View' were not added ('--- Current tab props ---', '--- Global props ---') even if they are present in menu.json
+
 1.1.12 (2023-12-22)
 fixed: adapted to change in menu_proc API
 
