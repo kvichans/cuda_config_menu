@@ -2,7 +2,7 @@
 Authors:
     Andrey Kvichansky    (kvichans on github)
 Version:
-    '1.1.12 2023-12-22'
+    '1.1.13 2025-03-01'
 '''
 
 import  os, shutil, webbrowser, json, collections, re
@@ -217,6 +217,11 @@ def _reset_menu_hnt(mnu_list, prnt_id=None, _prnt_cap_path=''):
             # Plugin Cmd!
             app.menu_proc(          prnt_id, app.MENU_ADD, command=cmd_s, caption=cap)
         elif cmd_s:
+            # support two View disabled menu items
+            if cap.startswith('--') and cap.endswith('--'):
+                temp_id = app.menu_proc(prnt_id, app.MENU_ADD, command=0, caption=cap)
+                app.menu_proc(temp_id, app.MENU_SET_ENABLED, command=False)
+                continue
             # Core Cmd!
             if not hnt and cmd_s not in CMD_NMS:
                 pass;           LOG8 and log('Error "unk cmd": _prnt_cap_path={} mnu_dict={}',_prnt_cap_path,mnu_dict)
